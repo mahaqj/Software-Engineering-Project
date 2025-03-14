@@ -1,0 +1,47 @@
+# Ignore Python cache and compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ignore environment variables and secrets
+.env
+*.env
+
+# Ignore database files (if using SQLite)
+db.sqlite3
+
+# Ignore Django migrations cache (optional)
+*/migrations/__pycache__/
+*/migrations/*.pyc
+*/migrations/*.pyo
+
+# Ignore MySQL database dumps and config files
+*.sql
+*.sql.gz
+mysql.cnf
+
+# Ignore Virtual Environments
+venv/
+env/
+.venv/
+
+# Ignore logs
+*.log
+logs/
+
+# Ignore Django static and media files (if collected)
+staticfiles/
+media/
+
+# Ignore VS Code settings
+.vscode/
+
+# Ignore JetBrains IDEs (PyCharm)
+.idea/
+
+# Ignore compiled Cython files
+*.so
+
+# Ignore coverage reports
+.coverage
+htmlcov/
