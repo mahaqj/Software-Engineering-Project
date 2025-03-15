@@ -17,6 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+#this file maps urls to views so django knows what func to call when a user visits a page
+
 urlpatterns = [
     path('admin/', admin.site.urls),
 ]
