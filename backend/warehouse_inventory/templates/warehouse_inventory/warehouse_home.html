@@ -1,13 +1,18 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Restaurant Home</title>
+    <title>Warehouse Manager Home</title>
 </head>
 <body>
-    <h2>Welcome Warehouse Manager!</h2>
-    <p>You are successfully logged in.</p>
+    <h2>Welcome, {{ request.user.manager_name }}</h2>
+
+    <a href="{% url 'restaurant_manager_requests' %}">
+        <button>Accept Restaurant Manager Requests</button>
+    </a>
+
+    <br><br>
+    <a href="{% url 'logout' %}">Logout</a>
 </body>
 </html>

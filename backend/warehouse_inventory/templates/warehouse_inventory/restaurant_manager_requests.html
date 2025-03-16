@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pending Requests</title>
+</head>
+<body>
+    <h2>Pending Restaurant Manager Requests</h2>
+    <ul>
+        {% for manager in pending_requests %}
+            <li>
+                {{ manager.restaurant_name }} - {{ manager.user.manager_name }}
+                <form action="{% url 'process_request' manager.user.user_id 'approve' %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit">Accept</button>
+                </form>
+                <form action="{% url 'process_request' manager.user.user_id 'reject' %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit">Reject</button>
+                </form>
+            </li>
+        {% empty %}
+            <li>No pending requests.</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'warehouse_home' %}">Back to Home</a>
+</body>
+</html>
