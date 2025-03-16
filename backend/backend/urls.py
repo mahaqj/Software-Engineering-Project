@@ -19,6 +19,14 @@ from django.urls import path
 
 #this file maps urls to views so django knows what func to call when a user visits a page
 
+# urlpatterns = [
+#     path('admin/', admin.site.urls),
+# ]
+
+from django.urls import path, include
+from django.contrib import admin
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("", include("warehouse_inventory.urls")),  # Include app's URLs
 ]

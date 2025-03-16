@@ -4,14 +4,31 @@ from django.db import models
 
 ######################################################################################################################################################
 
-class User(models.Model): #user model -> abstract base class
-    user_id = models.AutoField(primary_key=True) #auto-incrementing pk
+# class User(models.Model): #user model -> abstract base class
+#     user_id = models.AutoField(primary_key=True) #auto-incrementing pk
+#     manager_name = models.CharField(max_length=255)
+#     username = models.CharField(max_length=150, unique=True)
+#     email = models.EmailField(unique=True) #unique to prevent duplicate restaurants in the system, etc
+#     password = models.CharField(max_length=255)
+#     contact_no = models.CharField(max_length=20)
+#     location = models.CharField(max_length=255)
+#     role = models.CharField(max_length=20, choices=[("warehouse manager", "Warehouse Manager"), ("restaurant manager", "Restaurant Manager")]) #first value is stored in db, second is displayed
+
+#     def __str__(self):
+#         return self.manager_name #string rep of the object, improves readability (example below)
+#         #print(user) -> output: Maha instead of print(user) -> output: <User: User object (1)> (not very useful)
+
+from django.contrib.auth.models import AbstractUser
+from django.db import models
+
+class User(AbstractUser):
+    user_id = models.AutoField(primary_key=True)
     manager_name = models.CharField(max_length=255)
-    email = models.EmailField(unique=True) #unique to prevent duplicate restaurants in the system, etc
-    password = models.CharField(max_length=255)
     contact_no = models.CharField(max_length=20)
     location = models.CharField(max_length=255)
-    role = models.CharField(max_length=20, choices=[("warehouse manager", "Warehouse Manager"), ("restaurant manager", "Restaurant Manager")]) #first value is stored in db, second is displayed
+    role = models.CharField(max_length=20, choices=[("warehouse manager", "Warehouse Manager"), ("restaurant manager", "Restaurant Manager")])
+
+    REQUIRED_FIELDS = ["manager_name", "contact_no", "location", "role"]
 
     def __str__(self):
         return self.manager_name #string rep of the object, improves readability (example below)
