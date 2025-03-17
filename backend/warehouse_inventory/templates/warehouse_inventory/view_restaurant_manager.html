@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Account Details</title>
+</head>
+<body>
+    <h2>Restaurant Manager Account Details</h2>
+    
+    <p><strong>Manager Name:</strong> {{ manager.user.manager_name }}</p>
+    <p><strong>Contact Number:</strong> {{ manager.user.contact_no }}</p>
+    <p><strong>Location:</strong> {{ manager.user.location }}</p>
+    <p><strong>Bank Account Number:</strong> {{ manager.bank_acc_no }}</p>
+    <p><strong>Restaurant Name:</strong> {{ manager.restaurant_name }}</p>
+    <p><strong>Status:</strong> {{ manager.status }}</p>
+
+    <a href="{% url 'restaurant_home' %}">Back</a>
+</body>
+</html>

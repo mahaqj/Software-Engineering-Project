@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Account Details</title>
+</head>
+<body>
+    <h2>Edit Account Details</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        <label for="manager_name">Manager Name:</label>
+        <input type="text" name="manager_name" value="{{ manager.user.manager_name }}" required>
+        <br>
+
+        <label for="contact_no">Contact Number:</label>
+        <input type="text" name="contact_no" value="{{ manager.user.contact_no }}" required>
+        <br>
+
+        <label for="bank_acc_no">Bank Account Number:</label>
+        <input type="text" name="bank_acc_no" value="{{ manager.bank_acc_no }}" required>
+        <br>
+
+        <button type="submit">Save Changes</button>
+    </form>
+
+    <a href="{% url 'restaurant_home' %}">Cancel</a>
+</body>
+</html>

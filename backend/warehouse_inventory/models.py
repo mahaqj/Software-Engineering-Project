@@ -1,9 +1,11 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
 
 ######################################################################################################################################################
 
+# DISCLAIMER: do not remove the following comments yet
 # class User(models.Model): #user model -> abstract base class
 #     user_id = models.AutoField(primary_key=True) #auto-incrementing pk
 #     manager_name = models.CharField(max_length=255)
@@ -17,9 +19,6 @@ from django.db import models
 #     def __str__(self):
 #         return self.manager_name #string rep of the object, improves readability (example below)
 #         #print(user) -> output: Maha instead of print(user) -> output: <User: User object (1)> (not very useful)
-
-from django.contrib.auth.models import AbstractUser
-from django.db import models
 
 class User(AbstractUser):
     user_id = models.AutoField(primary_key=True)
@@ -54,7 +53,8 @@ class RestaurantManager(models.Model): #extends user class
         return f"Restaurant Manager: {self.user.manager_name} for Restaurant {self.restaurant_name}"
     
 ######################################################################################################################################################
-    
+
+#not being used right now
 class RequestToJoin(models.Model):
     request_id = models.AutoField(primary_key=True)
     user = models.ForeignKey(RestaurantManager, on_delete=models.CASCADE)
@@ -73,6 +73,7 @@ class Item(models.Model):
     quantity = models.IntegerField()
     unit_price = models.FloatField()
     expiry_date = models.DateField()
+    image = models.ImageField(upload_to='food_images/', blank=True, null=True)
     
     def __str__(self):
         return f"Item name: {self.item_name}"

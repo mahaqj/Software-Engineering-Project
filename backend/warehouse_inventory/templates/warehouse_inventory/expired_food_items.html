@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expired Food Items</title>
+</head>
+<body>
+    <h2>Expired Food Items</h2>
+
+    {% if expired_items %}
+        <ul>
+            {% for item in expired_items %}
+                <li>
+                    <strong>{{ item.item_name }}</strong> (Expired on: {{ item.expiry_date }})
+                    <td>
+                        <form action="{% url 'delete_food_item' item.item_id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" style="color: red;">Remove</button>
+                        </form>
+                    </td>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No expired food items.</p>
+    {% endif %}
+
+    <a href="{% url 'warehouse_home' %}">
+        <button>Back to Warehouse</button>
+    </a>
+</body>
+</html>

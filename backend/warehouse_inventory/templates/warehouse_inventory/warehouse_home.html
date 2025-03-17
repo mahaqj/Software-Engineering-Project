@@ -12,7 +12,21 @@
         <button>Accept Restaurant Manager Requests</button>
     </a>
 
+    <a href="{% url 'add_food_item' %}">
+        <button>Add Food Item</button>
+    </a>
+    
+    <a href="{% url 'view_food_items' %}">
+        <button>View Food Items</button>
+    </a>
+    <a href="{% url 'expired_food_items' %}">
+        <button>Expired Food Items</button>
+    </a>
     <br><br>
-    <a href="{% url 'logout' %}">Logout</a>
+    <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+    </form>
+    
 </body>
 </html>
