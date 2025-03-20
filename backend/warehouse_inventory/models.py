@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 
 # Create your models here.
 
@@ -37,6 +38,19 @@ class User(AbstractUser):
 
 class WarehouseManager(models.Model): #extends user class
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True) #if user is deleted, warehousemanager is also deleted
+
+    def save(self, *args, **kwargs):
+        if not self.pk and WarehouseManager.objects.exists():
+            raise ValidationError("There can only be one Warehouse Manager.")
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        raise ValueError("Deleting the Warehouse Manager is not allowed.")
+
+    @classmethod
+    def get_instance(cls):
+        instance, _ = cls.objects.get_or_create()
+        return instance
 
     def __str__(self):
         return f"Warehouse Manager: {self.user.manager_name}"

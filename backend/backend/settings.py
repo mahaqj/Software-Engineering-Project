@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-ydz5wwgf1hyr8=0)ev%d=&d!h!&$_ahpo#1jtfjf*tdn@m3pqa'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
+DEBUG = False
+LOGIN_URL = "/warehouse_inventory/login/"  # Change this to match your login URL
+ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
 
 # Application definition
