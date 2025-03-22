@@ -1,10 +1,8 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.contrib.auth import login
-from django.http import HttpResponseForbidden
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required
-from .forms import RestaurantManagerSignupForm, ItemForm, WarehouseManagerSignupForm
-from .models import RestaurantManager, Item
+from .forms import RestaurantManagerSignupForm, WarehouseManagerSignupForm, ItemForm, BatchForm
 from . import services
 from .decorators import warehouse_manager_required, restaurant_manager_required
 
@@ -89,7 +87,7 @@ def restaurant_manager_signup(request):
 @login_required
 @restaurant_manager_required
 def restaurant_home_view(request):
-    manager = RestaurantManager.objects.filter(user=request.user).first()
+    manager = services.get_restaurant_manager(request.user)
     return render(request, "warehouse_inventory/restaurant_home.html", {"manager": manager})
 
 #----------------------------------------------------------------------------------------------------------------------#
@@ -117,7 +115,8 @@ def edit_restaurant_manager(request, user_id):
 @warehouse_manager_required
 def view_food_items(request):
     items = services.get_all_food_items()
-    return render(request, "warehouse_inventory/view_food_items.html", {"items": items})
+    items_with_stock = [{"item": item, "stock": services.get_current_stock(item.item_id)} for item in items]
+    return render(request, "warehouse_inventory/view_food_items.html", {"items_with_stock": items_with_stock})
 
 #----------------------------------------------------------------------------------------------------------------------#
 
@@ -125,12 +124,16 @@ def view_food_items(request):
 @warehouse_manager_required
 def add_food_item(request):
     if request.method == "POST":
-        form = ItemForm(request.POST, request.FILES) #handle image uploads
-        if services.add_food_item(form):
-            return redirect("view_food_items")
+        item_form = ItemForm(request.POST, request.FILES)
+        batch_form = BatchForm(request.POST)
+        if item_form.is_valid() and batch_form.is_valid():
+            item = services.add_food_item(item_form, batch_form)
+            if item:
+                return redirect("view_food_items")
     else:
-        form = ItemForm()
-    return render(request, "warehouse_inventory/add_food_item.html", {"form": form})
+        item_form = ItemForm()
+        batch_form = BatchForm()
+    return render(request, "warehouse_inventory/add_food_item.html", {"item_form": item_form, "batch_form": batch_form})
 
 #----------------------------------------------------------------------------------------------------------------------#
 
@@ -143,23 +146,52 @@ def delete_food_item(request, item_id): #item_id as parameter from url
 
 #----------------------------------------------------------------------------------------------------------------------#
 
-@login_required
-@warehouse_manager_required
-def edit_food_item(request, item_id):
-    item = get_object_or_404(Item, pk=item_id)
+def delete_batch(request, batch_id):
     if request.method == "POST":
-        new_price = request.POST.get("unit_price")
-        if new_price:
-            services.edit_food_item_price(item, new_price)
-            return redirect("view_food_items")
-    return render(request, "warehouse_inventory/edit_food_item.html", {"item": item})
+        services.delete_batch_by_id(batch_id)
+    return redirect("expired_food_items")
+
+#----------------------------------------------------------------------------------------------------------------------#
+
+@login_required
+@warehouse_manager_required #services?
+def update_price_list(request):
+    items = services.get_all_food_items()
+    if request.method == "POST":
+        for item in items:
+            new_price = request.POST.get(f"price_{item.item_id}") #get da val
+            if new_price:
+                services.update_item_price(item.item_id, new_price)
+        return redirect("view_food_items")
+    return render(request, "warehouse_inventory/update_price_list.html", {"items": items})
 
 #----------------------------------------------------------------------------------------------------------------------#
 
 @login_required
 @warehouse_manager_required
 def expired_food_items(request):
-    expired_items = services.get_expired_food_items()
-    return render(request, "warehouse_inventory/expired_food_items.html", {"expired_items": expired_items})
+    expired_batches = services.get_expired_batches()
+    expiring_soon_batches = services.get_expiring_soon_batches()
+    return render(request, "warehouse_inventory/expired_food_items.html", {"expired_batches": expired_batches, "expiring_soon_batches": expiring_soon_batches})
+
+#----------------------------------------------------------------------------------------------------------------------#
+
+@login_required
+@warehouse_manager_required
+def restock_items(request):
+    low_stock_items = services.get_low_stock_items_with_stock()
+    return render(request, "warehouse_inventory/restock_items.html", {"low_stock_items": low_stock_items})
+
+#----------------------------------------------------------------------------------------------------------------------#
+
+@login_required
+@warehouse_manager_required
+def restock_item(request, item_id):
+    if request.method == "POST":
+        quantity = request.POST.get("quantity")
+        expiry_date = request.POST.get("expiry_date")
+        if quantity and expiry_date:
+            services.restock_item(item_id, int(quantity), expiry_date)
+    return redirect("restock_items")
 
 #----------------------------------------------------------------------------------------------------------------------#

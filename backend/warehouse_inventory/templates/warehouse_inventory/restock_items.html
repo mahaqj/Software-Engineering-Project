@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restock Items</title>
+</head>
+<body>
+
+    <h2>Restock Items</h2>
+
+    {% if low_stock_items %}
+        <table border="1">
+            <tr>
+                <th>Item ID</th>
+                <th>Name</th>
+                <th>Current Stock</th>
+                <th>Restock</th>
+            </tr>
+            {% for data in low_stock_items %}
+            <tr>
+                <td>{{ data.item.item_id }}</td>
+                <td>{{ data.item.item_name }}</td>
+                <td>{{ data.stock }}</td>
+                <td>
+                    <form method="post" action="{% url 'restock_item' data.item.item_id %}">
+                        {% csrf_token %}
+                        <input type="number" name="quantity" placeholder="Qty" min="1" required>
+                        <input type="date" name="expiry_date" required>
+                        <button type="submit">Restock</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>No items need restocking at the moment. 🎉</p>
+    {% endif %}
+
+    <br>
+
+    <a href="{% url 'warehouse_home' %}">
+        <button>Back to Warehouse</button>
+    </a>
+
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Price List</title>
+</head>
+<body>
+    <h2>Update Price List</h2>
+    
+    <form method="post">
+        {% csrf_token %}
+        <table border="1">
+            <tr>
+                <th>Item ID</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Current Price</th>
+                <th>New Price</th>
+            </tr>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.item_id }}</td>
+                <td>{{ item.item_name }}</td>
+                <td>{{ item.category }}</td>
+                <td>${{ item.unit_price }}</td>
+                <td>
+                    <input type="number" name="price_{{ item.item_id }}" step="0.01" value="{{ item.unit_price }}">
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">No food items available.</td>
+            </tr>
+            {% endfor %}
+        </table>
+        <br>
+        <button type="submit">Update Prices</button>
+    </form>
+
+    <br>
+    <a href="{% url 'warehouse_home' %}">Back to Home</a>
+</body>
+</html>

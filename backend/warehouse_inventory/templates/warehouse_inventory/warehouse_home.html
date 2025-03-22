@@ -22,6 +22,12 @@
     <a href="{% url 'expired_food_items' %}">
         <button>Expired Food Items</button>
     </a>
+    <a href="{% url 'update_price_list' %}">
+        <button>Update Price List</button>
+    </a>    
+    <a href="{% url 'restock_items' %}">
+        <button>Restock Items</button>
+    </a>    
     <br><br>
     <form action="{% url 'logout' %}" method="post">
         {% csrf_token %}

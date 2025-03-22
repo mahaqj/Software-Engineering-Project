@@ -3,6 +3,9 @@ from django.contrib.auth import get_user_model
 from django.utils.timezone import now
 from django.shortcuts import get_object_or_404
 from .models import RestaurantManager, Item, WarehouseManager
+from datetime import date, timedelta
+from django.db.models import Sum
+from .models import Batch
 
 ####################################################### ACCOUNTS #######################################################
 
@@ -42,32 +45,81 @@ def get_restaurant_manager_by_id(user_id):
     return get_object_or_404(RestaurantManager, pk=user_id)
 
 def edit_restaurant_manager(manager, data):
-    manager.user.manager_name = data.get("manager_namee")
-    manager.user.contact_no = data.get("contact_no")
-    manager.bank_acc_no = data.get("bank_acc_no")
+    manager.user.manager_name = data.get("manager_name", manager.user.manager_name)
+    manager.user.contact_no = data.get("contact_no", manager.user.contact_no)
+    manager.bank_acc_no = data.get("bank_acc_no", manager.bank_acc_no)
     manager.user.save()
     manager.save()
 
-################################################### FOOD MANAGEMENT ####################################################
+################################################# INVENTORY MANAGEMENT #################################################
 
 def get_all_food_items():
-    return Item.objects.all()
+    return Item.objects.prefetch_related("batches").order_by("category", "item_name")
 
-def add_food_item(form):
-    if form.is_valid():
-        form.save()
-        return True
-    return False
+def add_food_item(item_form, batch_form):
+    if item_form.is_valid() and batch_form.is_valid():
+        item = item_form.save() #save item
+        batch = batch_form.save(commit=False) #get batch instance
+        batch.item = item
+        batch.save()
+        return item
+    return None
 
-def delete_food_item(item_id):
+def update_item_price(item_id, new_price):
     item = get_object_or_404(Item, pk=item_id)
-    item.delete()
-
-def edit_food_item_price(item, new_price):
     item.unit_price = float(new_price)
     item.save()
+
+def delete_batch_by_id(batch_id): #deletes specific batch
+    batch = get_object_or_404(Batch, pk=batch_id)
+    batch.delete()
+
+def delete_food_item(item_id): #deletes all batches of that item
+    item = get_object_or_404(Item, pk=item_id)
+    item.batches.all().delete()
+    item.delete()
 
 def get_expired_food_items():
     return Item.objects.filter(expiry_date__lt=now().date())
 
-########################################################################################################################
+def get_expired_batches():
+    return Batch.objects.filter(expiry_date__lt=now().date())
+
+def get_expiring_soon_batches(days=7):
+    today = date.today()
+    upcoming_expiry = today + timedelta(days=days)
+    return Batch.objects.filter(expiry_date__gte=today, expiry_date__lte=upcoming_expiry)
+
+def get_current_stock(item_id):
+    item = get_object_or_404(Item, pk=item_id)
+    return item.batches.aggregate(total_stock=Sum("quantity"))["total_stock"] or 0 #sums up all item quantities across all batches
+
+def restock_item(item_id, quantity, expiry_date):
+    item = get_object_or_404(Item, pk=item_id)
+    batch = Batch.objects.create(item=item, quantity=quantity, expiry_date=expiry_date)
+    return batch
+
+def get_low_stock_items(margin=10):
+    return Item.objects.annotate(total_stock=Sum("batches__quantity")).filter(total_stock__lt=margin)
+
+def get_low_stock_items_with_stock():
+    low_stock_items = get_low_stock_items()  # Already in services.py
+    return [{"item": item, "stock": get_current_stock(item.item_id)} for item in low_stock_items]
+
+def deduct_stock(item_id, quantity): #haven't tested out
+    item = get_object_or_404(Item, pk=item_id)
+    total_stock = get_current_stock(item_id)
+    if total_stock < quantity:
+        return False #not enough stock
+    batches = item.batches.filter(quantity__gt=0).order_by("expiry_date")
+    remaining_quantity = quantity
+    for batch in batches:
+        if batch.quantity >= remaining_quantity:
+            batch.quantity -= remaining_quantity
+            batch.save()
+            return True
+        else:
+            remaining_quantity -= batch.quantity
+            batch.quantity = 0
+            batch.save()
+    return True #deduction successful

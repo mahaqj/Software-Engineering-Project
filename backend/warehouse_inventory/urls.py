@@ -3,8 +3,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth.views import LogoutView
 from .views import CustomLoginView, restaurant_manager_signup, restaurant_home_view, warehouse_home_view
-from .views import delete_food_item, edit_food_item, edit_restaurant_manager, view_restaurant_manager, expired_food_items
-from .views import restaurant_manager_requests_view, process_request, add_food_item, view_food_items, warehouse_manager_signup
+from .views import delete_food_item, edit_restaurant_manager, view_restaurant_manager, expired_food_items
+from .views import restaurant_manager_requests_view, process_request, add_food_item, view_food_items, warehouse_manager_signup, update_price_list, restock_items, restock_item, delete_batch
 
 urlpatterns = [
     path("signup/", restaurant_manager_signup, name="signup"),
@@ -17,9 +17,12 @@ urlpatterns = [
     path("add_food_item/", add_food_item, name="add_food_item"),
     path("view_food_items/", view_food_items, name="view_food_items"),
     path("delete_food_item/<int:item_id>/", delete_food_item, name="delete_food_item"),
-    path("edit_food_item/<int:item_id>/", edit_food_item, name="edit_food_item"),
     path("edit_restaurant_manager/<int:user_id>/", edit_restaurant_manager, name="edit_restaurant_manager"),
     path("view_restaurant_manager/<int:user_id>/", view_restaurant_manager, name="view_restaurant_manager"),
     path("expired_food_items/", expired_food_items, name="expired_food_items"),
     path("warehouse_signup/", warehouse_manager_signup, name="warehouse_signup"),
+    path("update_price_list/", update_price_list, name="update_price_list"),
+    path("restock_items/", restock_items, name="restock_items"),
+    path("restock_item/<int:item_id>/", restock_item, name="restock_item"),
+    path('delete_batch/<int:batch_id>/', delete_batch, name='delete_batch'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

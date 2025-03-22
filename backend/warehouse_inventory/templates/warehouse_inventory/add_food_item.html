@@ -16,7 +16,7 @@
 </body>
 </html> {% endcomment %}
 
-<!DOCTYPE html>
+{% comment %} <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -30,6 +30,31 @@
         {{ form.as_p }}  <!-- This will render all form fields automatically -->
         <button type="submit">Add Item</button>
     </form>
+    <a href="{% url 'warehouse_home' %}">Back to Home</a>
+</body>
+</html> {% endcomment %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Food Item</title>
+</head>
+<body>
+    <h2>Add New Food Item</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <h3>Item Details</h3>
+        {{ item_form.as_p }}
+
+        <h3>Initial Batch</h3>
+        {{ batch_form.as_p }}
+
+        <button type="submit">Add Item</button>
+    </form>
+    
     <a href="{% url 'warehouse_home' %}">Back to Home</a>
 </body>
 </html>

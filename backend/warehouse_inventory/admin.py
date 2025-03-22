@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, WarehouseManager, RestaurantManager, RequestToJoin, Item, Order, OrderItem, Payment
+from .models import User, WarehouseManager, RestaurantManager, Batch, Item, Order, OrderItem, Payment
 
 # Register your models here.
 
@@ -7,7 +7,7 @@ from .models import User, WarehouseManager, RestaurantManager, RequestToJoin, It
 admin.site.register(User)
 admin.site.register(WarehouseManager)
 admin.site.register(RestaurantManager)
-admin.site.register(RequestToJoin)
+admin.site.register(Batch)
 admin.site.register(Item)
 admin.site.register(Order)
 admin.site.register(OrderItem)

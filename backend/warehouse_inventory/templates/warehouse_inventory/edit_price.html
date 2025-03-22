@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Unit Price</title>
+</head>
+<body>
+    <h2>Edit Unit Price</h2>
+
+    <div style="border: 1px solid #ddd; padding: 15px; max-width: 400px;">
+        {% if item.image %}
+            <img src="{{ item.image.url }}" alt="{{ item.item_name }}" width="150" height="150">
+        {% else %}
+            <img src="/static/default-image.png" alt="No Image Available" width="150" height="150">
+        {% endif %}
+
+        <p><strong>Item ID:</strong> {{ item.item_id }}</p>
+        <p><strong>Name:</strong> {{ item.item_name }}</p>
+        <p><strong>Current Price:</strong> ${{ item.unit_price }}</p>
+
+        <form method="post">
+            {% csrf_token %}
+            <label for="id_unit_price">New Price:</label>
+            {{ form.unit_price }}
+            <button type="submit">Update Price</button>
+        </form>
+
+        <br>
+        <a href="{% url 'view_food_items' %}">Back to Food Items</a>
+    </div>
+</body>
+</html>

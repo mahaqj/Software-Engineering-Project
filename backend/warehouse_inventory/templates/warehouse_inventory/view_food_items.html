@@ -1,56 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Food Items</title>
 </head>
 <body>
+
     <h2>Food Items</h2>
+
     <table border="1">
         <tr>
             <th>Item ID</th>
             <th>Name</th>
             <th>Category</th>
-            <th>Quantity</th>
             <th>Unit Price</th>
-            <th>Expiry Date</th>
-            <th>Image</th>  <!-- Add Image Column -->
+            <th>Image</th>
+            <th>Batches</th>
+            <th>Delete</th>
+            <th>Current Stock</th>  <!-- Added column -->
         </tr>
-        {% for item in items %}
+        {% for data in items_with_stock %}
         <tr>
-            <td>{{ item.item_id }}</td>
-            <td>{{ item.item_name }}</td>
-            <td>{{ item.category }}</td>
-            <td>{{ item.quantity }}</td>
-            <td>{{ item.unit_price }}</td>
-            <td>{{ item.expiry_date }}</td>
+            <td>{{ data.item.item_id }}</td>
+            <td>{{ data.item.item_name }}</td>
+            <td>{{ data.item.category }}</td>
+            <td>{{ data.item.unit_price }}</td>
             <td>
-                {% if item.image %}
-                    <img src="{{ item.image.url }}" alt="{{ item.item_name }}" width="100" height="100">
+                {% if data.item.image %}
+                    <img src="{{ data.item.image.url }}" alt="{{ data.item.item_name }}" width="100" height="100">
                 {% else %}
                     No Image
                 {% endif %}
             </td>
             <td>
-                <form action="{% url 'delete_food_item' item.item_id %}" method="post">
+                {% if data.item.batches.all %}
+                    <ul>
+                        {% for batch in data.item.batches.all %}
+                            <li>Batch {{ batch.batch_id }} - Qty: {{ batch.quantity }} - Exp: {{ batch.expiry_date }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    No batches available.
+                {% endif %}
+            </td>
+            <td>
+                <form action="{% url 'delete_food_item' data.item.item_id %}" method="post">
                     {% csrf_token %}
                     <button type="submit" style="color: red;">Delete</button>
                 </form>
             </td>
-            <td>
-                <form action="{% url 'edit_food_item' item.item_id %}" method="get">
-                    <button type="submit" style="color: blue;">Edit</button>
-                </form>
-            </td>
+            <td>{{ data.stock|default:0 }}</td>  <!-- Display stock properly -->
         </tr>
         {% empty %}
         <tr>
-            <td colspan="7">No food items available.</td>
+            <td colspan="8">No food items available.</td>
         </tr>
         {% endfor %}
     </table>
 
-    <a href="{% url 'warehouse_home' %}">Back to Home</a>
+    <br>
+
+    <!-- 🏠 Back Button -->
+    <a href="{% url 'warehouse_home' %}">
+        <button>Back to Warehouse</button>
+    </a>
+
 </body>
 </html>

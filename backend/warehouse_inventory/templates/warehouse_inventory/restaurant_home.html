@@ -10,9 +10,9 @@
     <h2>Welcome Restaurant Manager!</h2>
     <p>You are successfully logged in.</p>
     <p>Manager ID: {{ manager.user_id }}</p>
-    <a href="{% url 'edit_restaurant_manager' manager.user_id %}">
+    {% comment %} <a href="{% url 'edit_restaurant_manager' manager.user_id %}">
         <button>Edit Account Details</button>
-    </a> 
+    </a>  {% endcomment %}
     <a href="{% url 'view_restaurant_manager' request.user.user_id %}">
         <button>View Account Details</button>
     </a>
