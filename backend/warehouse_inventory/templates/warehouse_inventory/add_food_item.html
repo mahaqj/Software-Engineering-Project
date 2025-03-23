@@ -1,60 +1,242 @@
-{% comment %} <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Food Item</title>
-</head>
-<body>
-    <h2>Add Food Item</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Add Item</button>
-    </form>
-    <a href="{% url 'warehouse_home' %}">Back to Home</a>
-</body>
-</html> {% endcomment %}
-
-{% comment %} <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Food Item</title>
-</head>
-<body>
-    <h2>Add Food Item</h2>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}  <!-- This will render all form fields automatically -->
-        <button type="submit">Add Item</button>
-    </form>
-    <a href="{% url 'warehouse_home' %}">Back to Home</a>
-</body>
-</html> {% endcomment %}
+{% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Food Item</title>
+    <title>Add Food Item - SupplyCraft</title>
+    <link
+    href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Tektur:wght@400..900&display=swap"
+    rel="stylesheet">
+<style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-size: cover;
+      font-family: "Pixelify Sans", sans-serif;
+      color: #ffffff;
+      background: url("{% static 'images/mcwall/add_food_item.png' %}") no-repeat center center fixed;
+      background-size: cover;
+    }
+    .aside{
+       width: 250px;
+       position: fixed;
+       left: 0;
+       top: 0;
+       height: 100%;
+       background-color: white;
+       background:rgb(238, 110, 37);
+   }
+
+   .main-content{
+       width: 80%;
+       position: fixed;
+       right: 0;
+       top: 0;
+       height: 100%;
+   }
+
+   .avatar{
+        vertical-align: middle;
+        width: 125px;
+        height: 125px;
+        border-radius: 50%;
+        margin-top: 40px;
+        margin-left: 60px;
+
+    }
+
+    .top-part{
+        width: 100%;
+        height: 190px;
+        align-items: center;
+    }
+
+    .link-section{
+        background-color:rgb(238, 144, 37);
+        height: 40px;
+        text-align: center;
+        margin: 0.5em;
+        padding:0.25em;
+        align-items: center;
+        color: #fff;
+    }
+
+    .link-section:hover{
+        background-color:rgb(238, 110, 37);
+        cursor: pointer;
+    }
+
+    a{
+        text-decoration: none;
+        color: #fff;
+    }
+
+    h2{
+        font-size: 35px;
+    }
+    .greeting{
+        padding-top: 0.8em;
+        padding-left: 0.8em;
+    }
+
+    .not_greeting{
+        padding-left: 0.8rem;
+    }
+    .table{
+        position: relative;
+        top: 5%;
+        height: 80%;
+        background-color: rgba(0, 0, 0, 0.6);
+    }
+
+    .form-container {
+    display: flex;
+    gap: 20px;
+  }
+  .form-fields, .image-column {
+    flex: 1;
+  }
+  .form-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  .form-row label {
+    width: 150px; /* Adjust as needed */
+    margin-right: 10px;
+  }
+  .image-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  /* Fixed preview size */
+  #preview {
+    width: 200px;
+    height: 200px;
+    border: 1px solid #ccc;
+    object-fit: cover;  /* Ensures the image covers the area without distortion */
+    margin-bottom: 10px;
+  }
+</style>
 </head>
 <body>
-    <h2>Add New Food Item</h2>
+    <div class="aside">
+        <div class="top-part">
+            <img src="{% static 'images/mcwall/Alex.png' %}" alt="Avatar" class="avatar">
+        </div>
+        <a href="{% url 'restaurant_manager_requests' %}">
+            <div class="link-section">
+                View Requests
+            </div>
+        </a>
+        <a href="{% url 'add_food_item' %}">
+        <div class="link-section">
+            Add Food Item
+        </div>
+        </a>
+        <a href="{% url 'view_food_items' %}">
+            <div class="link-section">
+                View Food Items
+            </div>
+        </a>
+        <a href="{% url 'expired_food_items' %}">
+            <div class="link-section">
+                Track Expiry Dates
+            </div>
+        </a>
+        <a href="{% url 'update_price_list' %}">
+            <div class="link-section">
+                Update Price List
+            </div>
+        </a>
+        <a href="{% url 'restock_items' %}">
+            <div class="link-section">
+                Restock Items
+            </div>
+        </a>
+        
+        <div class="link-section">
+            <form action="{% url 'logout' %}" method="post">
+                {% csrf_token %}
+                <button type="submit">Logout</button>
+            </form>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="table">
+        <div class="greeting">
+            <h2>Add New Food Item</h2>
+        </div>
+        <div class="not_greeting">
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         
         <h3>Item Details</h3>
-        {{ item_form.as_p }}
-
-        <h3>Initial Batch</h3>
-        {{ batch_form.as_p }}
-
+        <div class="form-container">
+            <!-- Left column: Form fields -->
+            <div class="form-fields">
+              <div class="form-row">
+                {{ item_form.item_name.label_tag }}
+                {{ item_form.item_name }}
+              </div>
+              <div class="form-row">
+                {{ item_form.category.label_tag }}
+                {{ item_form.category }}
+              </div>
+              <div class="form-row">
+                {{ item_form.unit_price.label_tag }}
+                {{ item_form.unit_price }}
+              </div>
+             
+              <div class="form-row">
+                {{ batch_form.quantity.label_tag }}
+                {{ batch_form.quantity }}
+              </div>
+              <div class="form-row">
+                {{ batch_form.expiry_date.label_tag }}
+                {{ batch_form.expiry_date }}
+              </div>
+            </div>
+            
+            <!-- Right column: Image preview and upload -->
+            <div class="image-column">
+                <!-- Default image from static folder -->
+                <img id="preview" src="{% static 'images/mcwall/name_tag.png' %}" alt="Image Preview" />
+                <label for="id_image">Upload Image:</label>
+                {{ item_form.image }}
+              </div>
+          </div>
         <button type="submit">Add Item</button>
     </form>
-    
+</div>
+</div>
+</div>
     <a href="{% url 'warehouse_home' %}">Back to Home</a>
 </body>
+<script>
+     // JavaScript to update the image preview when an image is selected.
+  const imageInput = document.getElementById("id_image");
+  const preview = document.getElementById("preview");
+
+  if(imageInput) {
+    imageInput.addEventListener("change", function(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          preview.src = e.target.result;
+        }
+        reader.readAsDataURL(file);
+      } 
+      else 
+      {
+        // Revert to default image if no file is selected
+        preview.src = "{% static 'images/mcwall/name_tag.png' %}";
+      }
+    });
+    }
+  </script>
 </html>

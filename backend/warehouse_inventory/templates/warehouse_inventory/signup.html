@@ -1,16 +1,297 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Restaurant Manager Signup</title>
+  <meta charset="UTF-8">
+  <title>Sign Up - SupplyCraft</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Tektur:wght@400..900&display=swap"
+    rel="stylesheet"
+  >
+  <style>
+    body {
+        background: url("{% static 'images/mcwall/signup_bg3.png' %}") no-repeat center center fixed;
+        font-family: "Pixelify Sans", sans-serif;
+    }
+    /* 1) Make .main-content use flex to place .first and .second side by side */
+    .main-content {
+      display: flex;         /* Enables flex layout */
+      width: 100%;
+      min-height: 70vh;      /* Optional: give some vertical space */
+      margin: 1em 0;         /* Some top/bottom spacing */
+      position: relative;
+      top: 150px;
+      
+      
+    }
+    .first, .second {
+      width: 50%;            /* Each div takes half the width */
+      padding: 0.5em;          /* Some padding so content isn’t flush against the edges */
+    }
+    .first {
+        margin-right: 0.5em;
+        background-color: rgba(0, 0, 0, 0.6);
+        
+    }
+
+    .second{
+        margin-left: 0.5em;
+        background-color: rgba(250, 150, 19, 0.685);
+        background-color: #c76124;
+        background-color: rgba(0, 0, 0, 0.6);
+        
+    }
+
+    .cont{
+      background-color: #c76124;
+      background-color: #807d7e;
+      background-color: #124faa;
+      background-color: #807d7e;
+      background-color:rgb(238, 144, 37);
+      width: 90%;
+      height: 85%;
+      color: #fff;
+      margin: 5%;
+      text-align: center;
+      align-items:center;
+    }
+
+    h2{
+      padding-top: 6%;
+    }
+
+    h3{
+      font-weight: 400;
+      padding-left: 1rem;
+      padding-right: 1rem;
+      font-style: none;
+    }
+    /* 2) Styling the form container */
+     /* Optional: limit form width */
+    /*
+    .first form {
+      max-width: 500px;     
+    }
+      */
+
+    /* 3) By default, Django’s form.as_p includes help text in a <span class="helptext">.
+          We can force it to display below the input using block display. */
+    .helptext {
+      display: block;        /* Make the help text appear on its own line */
+      margin-top: 0.3em;     /* A little space above the help text */
+      font-size: 0.9em;      /* Slightly smaller text */
+      color: #bbb;           /* Example color */
+    }
+
+    /* You can also style the paragraph that Django creates for each field
+       if you want to reduce spacing or otherwise control layout. */
+    .first form p {
+      margin-bottom: 0.5px;
+    }
+
+    /* Example: style the input fields themselves (Django will generate <input>).
+       If you need more control, either set widget attrs in the form or
+       override them in your CSS here. */
+       /*
+    .first form input {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+    }
+    */
+    /* Style the submit button */
+    .first form button[type="submit"] {
+      margin-top: 1em;
+      padding: 10px 15px;
+      cursor: pointer;
+    }
+
+   
+
+    p{
+        margin: 0;
+    }
+
+    .form-row {
+    display: flex;
+    align-items: center;    /* Vertically center label and input */
+    margin-bottom: 0.5em;
+    position: relative;
+    }
+
+    /* Label takes some fixed or percentage width, so it stays aligned in one column */
+    .form-row label {
+    width: 30%;             /* Adjust as desired */
+    margin-right: 1em;
+    text-align: center;      /* Right-align the text if you prefer */
+    color: #fff;
+    }
+
+    /* Input takes the remaining space */
+    .form-row input {
+    width: 70%;             /* or 100% minus label width, etc. */
+    padding: 8px;
+    box-sizing: border-box;
+    background-color: #4baf32;
+      color: #fff;
+      font-size: 0.75em;
+      outline: none;
+      font-family: "Pixelify Sans", sans-serif;
+      box-shadow: 0 0 10px rgba(0,0,0,0.8);
+      border: none;
+    }
+
+    .form-row:hover{
+        background: #246314;
+    }
+
+    button[type="submit"] {
+      width: 80%;
+      position: relative;
+      left: 10%;
+      padding: 10px;
+      background: #c76124;
+      background: #807d7e;
+      color: #fff;
+      font-family: "Pixelify Sans", sans-serif;
+      font-size: 1em;
+      /*border: 2px solid #22241b;*/
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(0,0,0,0.8);
+      
+    }
+    button[type="submit"]:hover {
+      background: #807d7e;
+      background:  #246314;
+      background: #c76124
+    }
+
+    /* Help text below the input, spanning the full width */
+    .helptext {
+    display: block;
+    margin-left: 31%;       /* align with the input column if you want */
+    margin-top: 0.3em;
+    font-size: 0.9em;
+    color: #bbb;
+    }
+
+    /* Error styling */
+    .error {
+    color: #ff6961;
+    margin-left: 31%;
+    margin-top: 0.3em;
+    font-size: 0.9em;
+    }
+
+   
+
+  </style>
 </head>
 <body>
-    <h2>Restaurant Manager Signup</h2>
-    <form method="post">
+  <div class="main-content">
+    <div class="first">
+      <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+        <!--{{ form.as_p }}-->
+        
+        <div class="form-row">
+                {{ form.manager_name.label_tag}}
+                {{form.manager_name}}
+                {% if form.manager_name.errors %}
+                    <div class="error">
+                        {% for error in form.manager_name.errors %}
+                            {{ error }}<br>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        <div class="form-row">
+            {{ form.username.label_tag}}
+             {{ form.username }}
+                {% if form.username.errors %}
+                    <div class="error">
+                        {% for error in form.username.errors %}
+                            {{error}}<br>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="form-row">
+                {{ form.email.label_tag}}
+                 {{form.email}}
+                {% if form.email.errors %}
+                    <div class="error">
+                        {% for error in form.email.errors %}
+                            {{ error }}<br>
+                        {% endfor%}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="form-row">
+                {{ form.password.label_tag}}
+                 {{form.password}}
+                {% if form.password.errors %}
+                    <div class="error">
+                        {% for error in form.password.errors %}
+                            {{ error }}<br>
+                        {% endfor%}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="form-row">
+                {{ form.contact_no.label_tag}}
+                 {{form.contact_no}}
+                {% if form.contact_no.errors %}
+                    <div class="error">
+                        {% for error in form.contact_no.errors %}
+                            {{ error }}<br>
+                        {% endfor%}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="form-row">
+                {{ form.location.label_tag}}
+                 {{form.location}}
+                {% if form.location.errors %}
+                    <div class="error">
+                        {% for error in form.location.errors %}
+                            {{ error }}<br>
+                        {% endfor%}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="form-row">
+                {{ form.restaurant_name.label_tag}}
+                 {{form.restaurant_name}}
+                {% if form.restaurant_name.errors %}
+                    <div class="error">
+                        {% for error in form.restaurant_name.errors %}
+                            {{ error }}<br>
+                        {% endfor%}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="form-row">
+                {{ form.bank_acc_no.label_tag}}
+                 {{form.bank_acc_no}}
+                {% if form.bank_acc_no.errors %}
+                    <div class="error">
+                        {% for error in form.bank_acc_no.errors %}
+                            {{ error }}<br>
+                        {% endfor%}
+                    </div>
+                {% endif %}
+            </div> 
         <button type="submit">Sign Up</button>
-    </form>
+      </form>
+    </div>
+    <div class="second">
+      <div class="cont">
+        <h2>Welcome to SupplyCraft!</h2>
+        <h3>We are an inventory management system specially designed to supply fresh products to restaurants.</h3>
+        <h3>If you wish to be added to our catering list, fill in your details and submit!</h3>
+        <h3>Your credentials will be valid once your request has been approved.</h3>
+    </div>
+  </div>
 </body>
 </html>
