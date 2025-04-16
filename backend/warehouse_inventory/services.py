@@ -123,3 +123,10 @@ def deduct_stock(item_id, quantity): #haven't tested out
             batch.quantity = 0
             batch.save()
     return True #deduction successful
+
+####
+
+def update_fees_in_system(settings, urgent_delivery_fee, late_payment_fee):
+    settings.urgent_delivery_fee = float(urgent_delivery_fee)
+    settings.late_payment_fee = float(late_payment_fee)
+    settings.save()

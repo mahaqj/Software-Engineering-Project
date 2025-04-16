@@ -1,0 +1,44 @@
+{% load static %}
+
+{% block content %}
+<div class="main-content">
+    <div class="greeting">
+        <h2>Product Catalog</h2>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Item ID</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Unit Price</th>
+                <th>Image</th>
+                <th>Current Stock</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for data in items_with_stock %}
+        <tr>
+            <td>{{ data.item.item_id }}</td>
+            <td>{{ data.item.item_name }}</td>
+            <td>{{ data.item.category }}</td>
+            <td>{{ data.item.unit_price }}</td>
+            <td>
+                {% if data.item.image %}
+                    <img src="{{ data.item.image.url }}" alt="{{ data.item.item_name }}" width="100" height="100">
+                {% else %}
+                    No Image
+                {% endif %}
+            </td>
+            <td>{{ data.stock|default:0 }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6">No food items available.</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

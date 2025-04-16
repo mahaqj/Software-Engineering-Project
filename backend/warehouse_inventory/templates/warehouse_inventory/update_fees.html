@@ -1,0 +1,64 @@
+{% comment %} <div class="main-content">
+    <div class="greeting">
+        <h2>Update System Fees</h2>
+    </div>
+    
+    <form method="post">
+        {% csrf_token %}
+        <table>
+            <tr>
+                <th>Fee Type</th>
+                <th>Current Value (Rs.)</th>
+                <th>New Value (Rs.)</th>
+            </tr>
+            <tr>
+                <td>Urgent Delivery Fee</td>
+                <td>Rs. {{ settings.urgent_delivery_fee }}</td>
+                <td>
+                    <input type="number" name="urgent_delivery_fee" step="0.01" value="{{ settings.urgent_delivery_fee }}">
+                </td>
+            </tr>
+            <tr>
+                <td>Late Payment Fee</td>
+                <td>Rs. {{ settings.late_payment_fee }}</td>
+                <td>
+                    <input type="number" name="late_payment_fee" step="0.01" value="{{ settings.late_payment_fee }}">
+                </td>
+            </tr>
+        </table>
+        <br>
+        <button type="submit">Update Fees</button>
+    </form>
+
+    <br>
+</div> {% endcomment %}
+
+<div class="main-content">
+    <div class="greeting">
+        <h2>Update Price Lists</h2>
+    </div>
+    
+    <form method="post">
+        {% csrf_token %}
+        <table>
+            <tr>
+                <th>Current Urgent Delivery Fee</th>
+                <th>Current Late Payment Fee</th>
+            </tr>
+            <tr>
+                <td>Rs. {{ settings.urgent_delivery_fee }}</td>
+                <td>Rs. {{ settings.late_payment_fee }}</td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="number" name="urgent_delivery_fee" step="0.01" value="{{ settings.urgent_delivery_fee }}">
+                </td>
+                <td>
+                    <input type="number" name="late_payment_fee" step="0.01" value="{{ settings.late_payment_fee }}">
+                </td>
+            </tr>
+        </table>
+        <br>
+        <button type="submit">Update Fees</button>
+    </form>
+</div>

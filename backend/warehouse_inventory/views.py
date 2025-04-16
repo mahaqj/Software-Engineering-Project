@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import RestaurantManagerSignupForm, WarehouseManagerSignupForm, ItemForm, BatchForm
 from . import services
 from .decorators import warehouse_manager_required, restaurant_manager_required
+from .models import SystemSettings
 
 ####################################################### ACCOUNTS #######################################################
 
@@ -194,4 +195,28 @@ def restock_item(request, item_id):
             services.restock_item(item_id, int(quantity), expiry_date)
     return redirect("restock_items")
 
-#----------------------------------------------------------------------------------------------------------------------#
+####
+
+@login_required
+@warehouse_manager_required
+def update_fees(request):
+    settings = SystemSettings.objects.first() #fetch singleton
+
+    if not settings:
+        return render(request, 'warehouse_inventory/update_fees.html', {'error': 'System settings are missing.'})
+
+    if request.method == 'POST':
+        urgent_delivery_fee = request.POST.get('urgent_delivery_fee')
+        late_payment_fee = request.POST.get('late_payment_fee')
+        services.update_fees_in_system(settings, urgent_delivery_fee, late_payment_fee)
+        return redirect('update_fees')
+    return render(request, 'warehouse_inventory/update_fees.html', {'settings': settings})
+
+####
+
+@login_required
+@restaurant_manager_required
+def view_product_catalog(request):
+    items = services.get_all_food_items()
+    items_with_stock = [{"item": item, "stock": services.get_current_stock(item.item_id)} for item in items]
+    return render(request, "warehouse_inventory/product_catalog.html", {"items_with_stock": items_with_stock})

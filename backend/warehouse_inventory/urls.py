@@ -4,7 +4,9 @@ from django.conf.urls.static import static
 from django.contrib.auth.views import LogoutView
 from .views import CustomLoginView, restaurant_manager_signup, restaurant_home_view, warehouse_home_view
 from .views import delete_food_item, edit_restaurant_manager, view_restaurant_manager, expired_food_items
-from .views import restaurant_manager_requests_view, process_request, add_food_item, view_food_items, warehouse_manager_signup, update_price_list, restock_items, restock_item, delete_batch
+from .views import restaurant_manager_requests_view, process_request, add_food_item, view_food_items
+from .views import update_fees, warehouse_manager_signup, update_price_list, restock_items, restock_item, delete_batch
+from .views import view_product_catalog
 
 urlpatterns = [
     path("signup/", restaurant_manager_signup, name="signup"),
@@ -24,5 +26,7 @@ urlpatterns = [
     path("update_price_list/", update_price_list, name="update_price_list"),
     path("restock_items/", restock_items, name="restock_items"),
     path("restock_item/<int:item_id>/", restock_item, name="restock_item"),
-    path('delete_batch/<int:batch_id>/', delete_batch, name='delete_batch'),
+    path("delete_batch/<int:batch_id>/", delete_batch, name="delete_batch"),
+    path("update_fees/", update_fees, name="update_fees"),
+    path("product_catalog/", view_product_catalog, name="product_catalog")
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

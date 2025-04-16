@@ -60,6 +60,7 @@ TEMPLATES = [
         'DIRS': [BASE_DIR / "backend" / "warehouse_inventory" / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
+            'debug': True, #added 16/4/25
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',

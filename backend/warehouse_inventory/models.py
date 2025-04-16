@@ -53,6 +53,15 @@ class RestaurantManager(models.Model): #extends user class
 
 ######################################################################################################################################################
 
+class SystemSettings(models.Model):
+    urgent_delivery_fee = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    late_payment_fee = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+
+    def __str__(self):
+        return "System Settings"
+
+######################################################################################################################################################
+
 class Item(models.Model):
     item_id = models.AutoField(primary_key=True)
     item_name = models.CharField(max_length=255)
@@ -75,18 +84,19 @@ class Batch(models.Model):
         return f"Batch {self.batch_id} - {self.item.item_name} - quantity: {self.quantity}"
     
 ######################################################################################################################################################
-    
+
 class Order(models.Model): #placed by restaurant manager
     order_id = models.AutoField(primary_key=True)
     restaurant_manager = models.ForeignKey(RestaurantManager, on_delete=models.CASCADE)
     date = models.DateField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=[("processing", "Processing"), ("fulfilled", "Fulfilled")])
+    urgent_delivery = models.BooleanField(default=False)
 
     def __str__(self):
         return f"Order {self.order_id} by {self.restaurant_manager.restaurant_name} - {self.status}"
 
 ######################################################################################################################################################
-    
+ 
 class OrderItem(models.Model):
     sr_no = models.AutoField(primary_key=True)
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="order_items")
