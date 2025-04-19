@@ -38,9 +38,20 @@
     .main-content{
         width: 80%;
         position: fixed;
-        right: 0;
+        left: 260px;
         top: 0;
         height: 100%;
+        overflow-y: auto;
+       /* Hide scrollbar for IE, Edge */
+        -ms-overflow-style: none;
+        /* Hide scrollbar for Firefox */
+        scrollbar-width: none;
+    }
+    
+
+    .aside::-webkit-scrollbar 
+    {
+    display: none;
     }
 
     .greeting{
@@ -152,6 +163,25 @@
                 Product Catalog
             </div>
         </a>
+        <a href="{% url 'view_cart' %}"> <!-- added this -->
+            <div class="link-section">
+                View Cart
+            </div>
+        </a>
+        <a href="{% url 'view_orders' %}"> <!-- added this -->
+            <div class="link-section">
+                View Orders
+            </div>
+        </a>
+        <a href="{% url 'restaurant_manager_billing' %}"> <!-- added this -->
+            <div class="link-section">
+                View Bill
+            </div>
+        </a>
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
     </div>
     <div class="main-content">
         <div class="greeting">
@@ -228,10 +258,7 @@
             {% endcomment %}
             
         </div>
-        <form action="{% url 'logout' %}" method="post">
-            {% csrf_token %}
-            <button type="submit">Logout</button>
-        </form>
+        
     </div>
     
 </body>

@@ -27,12 +27,23 @@
        height: 100%;
        background-color: white;
        background:rgb(238, 110, 37);
-   }
+       overflow-y: auto;
+       /* Hide scrollbar for IE, Edge */
+        -ms-overflow-style: none;
+        /* Hide scrollbar for Firefox */
+        scrollbar-width: none;
+    }
+    
+
+    .aside::-webkit-scrollbar 
+    {
+    display: none;
+    }
 
    .main-content{
        width: 80%;
        position: fixed;
-       right: 0;
+       left: 260px;
        top: 0;
        height: 100%;
    }
@@ -157,6 +168,11 @@
                 Restock Items
             </div>
         </a>
+        <a href="{% url 'update_fees' %}"> 
+          <div class="link-section">
+              Special Charges
+          </div>
+      </a>
         
         <div class="link-section">
             <form action="{% url 'logout' %}" method="post">

@@ -1,22 +1,215 @@
-<h2>🛒 Your Cart</h2>
-<form method="POST">
-    {% csrf_token %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Cart - SupplyCraft</title>
+  
+  <link
+    href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Tektur:wght@400..900&display=swap"
+    rel="stylesheet"
+  >
+<style>
+     body {
+      margin: 0;
+      padding: 0;
+      background-size: cover;
+      font-family: "Pixelify Sans", sans-serif;
+      color: #ffffff;
+      background: url("{% static 'images/mcwall/warehouse_home_1.png' %}") no-repeat center center fixed;
+
+      background-size: cover;
+      /* Custom cursor */
+      cursor: url("{% static 'images/cursor.png' %}") 16 16, auto;
+        
+    }
+
+    .aside{
+        width: 250px;
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100%;
+        background-color: white;
+        background: #246314;
+    }
+
+    .main-content{
+        width: 80%;
+        position: fixed;
+        left: 260px;
+        top: 0;
+        height: 100%;
+        overflow-y: auto;
+       /* Hide scrollbar for IE, Edge */
+        -ms-overflow-style: none;
+        /* Hide scrollbar for Firefox */
+        scrollbar-width: none;
+    }
     
-    <div>
-        <label for="urgent_delivery">Urgent Delivery</label>
-        <input type="checkbox" name="urgent_delivery" {% if urgent_delivery %}checked{% endif %}>
+
+    .aside::-webkit-scrollbar 
+    {
+    display: none;
+    }
+
+    .greeting{
+        padding-top: 1em;
+        padding-left: 1em;
+    }
+
+    .flex-container{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+        height: 80%;
+    }
+
+    .idea-card{
+        width: 300px;
+        height: 200px;
+        background-color: rgba(0, 0, 0, 0.6);
+        margin: 0.5em;
+        align-items: center;
+        text-align: center;
+    }
+
+    .idea-card:hover{
+        box-shadow: 0 0 20px rgba(0,0,0,0.7);
+        transition: 0.3s ease;
+    }
+
+    .heading{
+        padding-top:0.5em;
+        
+    }
+    .image{
+        width: 50%;
+        height: 50%;
+        background-color: white;
+        margin: auto;
+        margin-top: 1.5em;
+        border-radius: 50%;
+        
+    }
+
+    .image:hover{
+        transform: scale(1.1);
+        transition: .3s ease;
+    }
+    .responsive{
+        width: 100%;
+        height: 100%;
+    }
+
+    .avatar{
+        vertical-align: middle;
+        width: 125px;
+        height: 125px;
+        border-radius: 50%;
+        margin-top: 40px;
+        margin-left: 60px;
+
+    }
+
+    .top-part{
+        width: 100%;
+        height: 190px;
+        align-items: center;
+    }
+
+    .link-section{
+        background-color: #4baf32;
+        height: 40px;
+        text-align: center;
+        margin: 0.5em;
+        padding:0.25em;
+        align-items: center;
+        color: #fff;
+    }
+
+    .link-section:hover{
+        background: #246314;
+        cursor: pointer;
+    }
+
+    a{
+        text-decoration: none;
+        color: #fff;
+    }
+    table{
+        text-align: center;
+        border-spacing: 3px;
+        width: 80%;
+    }
+    tr{
+        text-align: center;
+        margin: 1em;
+    }
+
+    tr:hover{
+        background:  #246314;
+        cursor: pointer;
+    }
+
+    th{
+        background-color: gray;
+        background: #33891d;
+    }
+
+</style>
+</head>
+<body>
+    <div class="aside">
+        <div class="top-part">
+            <img src="{% static 'images/mcwall/Steve2.png' %}" alt="Avatar" class="avatar">
+        </div>
+        <a href="{% url 'view_restaurant_manager' request.user.user_id %}">
+            <div class="link-section">
+                View Account Details
+            </div>
+        </a>
+        <a href="{% url 'edit_restaurant_manager' request.user.user_id %}">
+            <div class="link-section">
+                Edit Account Details
+            </div>
+        </a>
+        <a href="{% url 'product_catalog' %}"> <!-- added this -->
+            <div class="link-section">
+                Product Catalog
+            </div>
+        </a>
+        <a href="{% url 'view_cart' %}"> <!-- added this -->
+            <div class="link-section">
+                View Cart
+            </div>
+        </a>
+        <a href="{% url 'view_orders' %}"> <!-- added this -->
+            <div class="link-section">
+                View Orders
+            </div>
+        </a>
+        <a href="{% url 'restaurant_manager_billing' %}"> <!-- added this -->
+            <div class="link-section">
+                View Bill
+            </div>
+        </a>
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
     </div>
+    <div class="main-content">
+        <div class="greeting">
+            <h2> Your Cart 🛒</h2>
+        </div>
+
+
     
-    <div>
-        <p><strong>Urgent Delivery Fee:</strong> ${{ urgent_delivery_fee }}</p>
-    </div>
-    
-    <div>
-        <button type="submit">Update Cart</button>
-    </div>
-</form>
 {% if order_items %}
-<table border="1">
+<table>
     <thead>
         <tr>
             <th>Item</th>
@@ -40,6 +233,22 @@
 </table>
 
 <h3>Total: Rs {{ total_amount }}</h3>
+<form method="POST">
+    {% csrf_token %}
+    
+    <div>
+        <label for="urgent_delivery">Urgent Delivery</label>
+        <input type="checkbox" name="urgent_delivery" {% if urgent_delivery %}checked{% endif %}>
+    </div>
+    
+    <div>
+        <p><strong>Urgent Delivery Fee:</strong> ${{ urgent_delivery_fee }}</p>
+    </div>
+    
+    <div>
+        <button type="submit">Update Cart</button>
+    </div>
+</form>
 
 <form method="POST" action="{% url 'place_order' %}">
     {% csrf_token %}
@@ -50,3 +259,5 @@
 {% else %}
 <p>Your cart is empty!</p>
 {% endif %}
+</div>
+</body>

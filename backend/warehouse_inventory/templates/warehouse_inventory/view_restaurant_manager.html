@@ -33,12 +33,23 @@
         height: 100%;
         background-color: white;
         background: #246314;
+        overflow-y: auto;
+       /* Hide scrollbar for IE, Edge */
+        -ms-overflow-style: none;
+        /* Hide scrollbar for Firefox */
+        scrollbar-width: none;
+    }
+    
+
+    .aside::-webkit-scrollbar 
+    {
+    display: none;
     }
 
     .main-content{
         width: 80%;
         position: fixed;
-        right: 0;
+        left: 260px;
         top: 0;
         height: 100%;
     }
@@ -117,6 +128,7 @@
         padding:0.25em;
         align-items: center;
         color: #fff;
+        
     }
 
     .link-section:hover{
@@ -128,7 +140,29 @@
         text-decoration: none;
         color: #fff;
     }
+    table{
+        text-align: center;
+        border-spacing: 3px;
+        width: 70%;
+    }
+    tr{
+        text-align: center;
+        margin: 1.5em;
+    }
 
+    tr:hover{
+        background:  #246314;
+        cursor: pointer;
+    }
+
+    th{
+        background-color: gray;
+        background: #33891d;
+    }
+
+    th, td{
+        padding: 8px;
+    }
 </style>
 </head>
 <body>
@@ -147,19 +181,44 @@
             Edit Account Details
         </div>
         </a>
+        <a href="{% url 'product_catalog' %}"> <!-- added this -->
+            <div class="link-section">
+                Product Catalog
+            </div>
+        </a>
     </div>
     <div class="main-content">
         <div class="greeting">
             <h2>Restaurant Manager Account Details</h2>
         </div>
 
-    
-    <p><strong>Manager Name:</strong> {{ manager.user.manager_name }}</p>
-    <p><strong>Contact Number:</strong> {{ manager.user.contact_no }}</p>
-    <p><strong>Location:</strong> {{ manager.user.location }}</p>
-    <p><strong>Bank Account Number:</strong> {{ manager.bank_acc_no }}</p>
-    <p><strong>Restaurant Name:</strong> {{ manager.restaurant_name }}</p>
-    <p><strong>Status:</strong> {{ manager.status }}</p>
+        <table>
+            <tr>
+                <th>Manager Name:</th>
+                <td>{{ manager.user.manager_name }}</td>
+            </tr>
+            <tr>
+                <th>Contact Number:</th>
+                <td>{{ manager.user.contact_no }}</td>
+            </tr>
+            <tr>
+                <th>Location:</th>
+                <td>{{ manager.user.location}}</td>
+            </tr>
+            <tr>
+                <th>Bank Account Number:</th>
+                <td>{{ manager.bank_acc_no }}</td>
+            </tr>
+            <tr>
+                <th>Restaurant Name:</th>
+                <td>{{ manager.restaurant_name }}</td>
+            </tr>
+            <tr>
+                <th>Status:</th>
+                <td>{{ manager.status }}</td>
+            </tr>
+        </table>
+   
 
     <!-- Edit Account Details Button -->
     <a href="{% url 'edit_restaurant_manager' manager.user_id %}">
