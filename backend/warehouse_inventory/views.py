@@ -201,10 +201,8 @@ def restock_item(request, item_id):
 @warehouse_manager_required
 def update_fees(request):
     settings = SystemSettings.objects.first() #fetch singleton
-
     if not settings:
         return render(request, 'warehouse_inventory/update_fees.html', {'error': 'System settings are missing.'})
-
     # if request.method == 'POST':
     #     urgent_delivery_fee = request.POST.get('urgent_delivery_fee')
     #     late_payment_fee = request.POST.get('late_payment_fee')
@@ -214,12 +212,8 @@ def update_fees(request):
     if request.method == 'POST':
         urgent_delivery_fee = request.POST.get('urgent_delivery_fee')
         late_payment_fee = request.POST.get('late_payment_fee')
-        
-        print("URGENT:", urgent_delivery_fee, "LATE:", late_payment_fee)  # 👀
-
         services.update_fees_in_system(settings, urgent_delivery_fee, late_payment_fee)
         return redirect('update_fees')
-
     return render(request, 'warehouse_inventory/update_fees.html', {'settings': settings})
 
 ####
@@ -384,3 +378,23 @@ def restaurant_manager_billing(request):
             payment.save()
         return redirect('restaurant_manager_billing')
     return render(request, 'warehouse_inventory/restaurant_manager_billing.html', {'pending_payments': pending_payments,'total_due': total_due,})
+
+
+#####
+
+
+
+from django.contrib.auth.decorators import login_required
+from .decorators import warehouse_manager_required  # Assuming you have this
+from .models import Payment
+
+# @login_required
+# @warehouse_manager_required
+# def view_payments(request):
+#     payments = Payment.objects.select_related("order", "order__restaurant_manager").all().order_by('-id')
+#     return render(request, "warehouse_inventory/view_payments.html", {"payments": payments})
+@login_required
+@warehouse_manager_required
+def view_payments(request):
+    payments = Payment.objects.select_related("order__restaurant_manager").all()
+    return render(request, "warehouse_inventory/view_payments.html", {"payments": payments})

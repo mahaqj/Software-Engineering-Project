@@ -7,7 +7,7 @@ from .views import delete_food_item, edit_restaurant_manager, view_restaurant_ma
 from .views import restaurant_manager_requests_view, process_request, add_food_item, view_food_items
 from .views import update_fees, warehouse_manager_signup, update_price_list, restock_items, restock_item, delete_batch
 from .views import view_product_catalog, add_to_cart, view_cart, place_order, view_orders, warehouse_orders
-from .views import fulfill_order, reject_order, cancel_order, restaurant_manager_billing
+from .views import fulfill_order, reject_order, cancel_order, restaurant_manager_billing, view_payments
 
 urlpatterns = [
     path("signup/", restaurant_manager_signup, name="signup"),
@@ -41,5 +41,5 @@ urlpatterns = [
     #path("send_message/<int:receiver_id>/", send_message, name="send_message"),
     #path('restaurant_manager_billing/', restaurant_manager_billing, name='restaurant_manager_billing'),
     path('billing/', restaurant_manager_billing, name='restaurant_manager_billing'),
-
+    path("view_payments/", view_payments, name="view_payments"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
