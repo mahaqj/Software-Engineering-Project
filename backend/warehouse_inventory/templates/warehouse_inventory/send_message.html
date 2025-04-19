@@ -1,0 +1,53 @@
+{% comment %} {% extends "base.html" %} {% endcomment %}
+
+{% block content %}
+<div class="main-content">
+    <div class="greeting">
+        <h2>Pending Restaurant Manager Requests</h2>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Restaurant Name</th>
+                <th>Manager Name</th>
+                <th>Send Message</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for manager in pending_requests %}
+                <tr>
+                    <td>{{ manager.restaurant_name }}</td>
+                    <td>{{ manager.user.manager_name }}</td>
+                    
+                    <!-- Inline Send Msg Form -->
+                    <td>
+                        <form method="post" action="{% url 'send_message' manager.user.user_id %}">
+                            {% csrf_token %}
+                            <input type="text" name="content" placeholder="Type message..." required>
+                            <button type="submit">Send Msg</button>
+                        </form>
+                    </td>
+
+                    <!-- Approve / Reject -->
+                    <td>
+                        <form action="{% url 'process_request' manager.user.user_id 'approve' %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit">Accept</button>
+                        </form>
+                        <form action="{% url 'process_request' manager.user.user_id 'reject' %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit">Reject</button>
+                        </form>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="4">No pending requests.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

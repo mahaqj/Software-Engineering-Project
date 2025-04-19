@@ -58,7 +58,7 @@ class SystemSettings(models.Model):
     late_payment_fee = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __str__(self):
-        return "System Settings"
+        return f"Urgent Delivery Fee: {self.urgent_delivery_fee}, Late Payment Fee: {self.late_payment_fee}"
 
 ######################################################################################################################################################
 
@@ -89,7 +89,7 @@ class Order(models.Model): #placed by restaurant manager
     order_id = models.AutoField(primary_key=True)
     restaurant_manager = models.ForeignKey(RestaurantManager, on_delete=models.CASCADE)
     date = models.DateField(auto_now_add=True)
-    status = models.CharField(max_length=20, choices=[("processing", "Processing"), ("fulfilled", "Fulfilled")])
+    status = models.CharField(max_length=20, choices=[("cart", "In Cart"), ("placed", "Order Placed"), ("fulfilled", "Fulfilled"), ("rejected", "Rejected"), ("canceled", "Canceled")])
     urgent_delivery = models.BooleanField(default=False)
 
     def __str__(self):
@@ -121,3 +121,14 @@ class Payment(models.Model): #associated w order
         return f"Payment {self.payment_id} - {self.payment_status} for Order {self.order.order_id}"
     
 ######################################################################################################################################################
+from django.utils import timezone
+
+class Message(models.Model):
+    id = models.AutoField(primary_key=True)
+    sender = models.ForeignKey(WarehouseManager, on_delete=models.CASCADE, related_name='sent_messages')
+    receiver = models.ForeignKey(RestaurantManager, on_delete=models.CASCADE, related_name='received_messages')
+    content = models.TextField()
+    date_sent = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"From {self.sender.user.username} to {self.receiver.restaurant_name} on {self.date_sent}"

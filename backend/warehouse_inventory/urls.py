@@ -6,7 +6,8 @@ from .views import CustomLoginView, restaurant_manager_signup, restaurant_home_v
 from .views import delete_food_item, edit_restaurant_manager, view_restaurant_manager, expired_food_items
 from .views import restaurant_manager_requests_view, process_request, add_food_item, view_food_items
 from .views import update_fees, warehouse_manager_signup, update_price_list, restock_items, restock_item, delete_batch
-from .views import view_product_catalog
+from .views import view_product_catalog, add_to_cart, view_cart, place_order, view_orders, warehouse_orders
+from .views import fulfill_order, reject_order, cancel_order, restaurant_manager_billing
 
 urlpatterns = [
     path("signup/", restaurant_manager_signup, name="signup"),
@@ -28,5 +29,17 @@ urlpatterns = [
     path("restock_item/<int:item_id>/", restock_item, name="restock_item"),
     path("delete_batch/<int:batch_id>/", delete_batch, name="delete_batch"),
     path("update_fees/", update_fees, name="update_fees"),
-    path("product_catalog/", view_product_catalog, name="product_catalog")
+    path("product_catalog/", view_product_catalog, name="product_catalog"),
+    path("add-to-cart/<int:item_id>/", add_to_cart, name="add_to_cart"),
+    path("cart/", view_cart, name="view_cart"),
+    path("place_order/", place_order, name="place_order"),
+    path("orders/", view_orders, name="view_orders"),
+    path("warehouse-orders/", warehouse_orders, name="warehouse_orders"),
+    path("warehouse-orders/fulfill/<int:order_id>/", fulfill_order, name="fulfill_order"),
+    path("warehouse-orders/reject/<int:order_id>/", reject_order, name="reject_order"),
+    path("orders/cancel/<int:order_id>/", cancel_order, name="cancel_order"),
+    #path("send_message/<int:receiver_id>/", send_message, name="send_message"),
+    #path('restaurant_manager_billing/', restaurant_manager_billing, name='restaurant_manager_billing'),
+    path('billing/', restaurant_manager_billing, name='restaurant_manager_billing'),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
