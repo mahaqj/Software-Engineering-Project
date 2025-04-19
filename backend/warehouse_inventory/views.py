@@ -205,11 +205,21 @@ def update_fees(request):
     if not settings:
         return render(request, 'warehouse_inventory/update_fees.html', {'error': 'System settings are missing.'})
 
+    # if request.method == 'POST':
+    #     urgent_delivery_fee = request.POST.get('urgent_delivery_fee')
+    #     late_payment_fee = request.POST.get('late_payment_fee')
+    #     services.update_fees_in_system(settings, urgent_delivery_fee, late_payment_fee)
+    #     return redirect('update_fees')
+
     if request.method == 'POST':
         urgent_delivery_fee = request.POST.get('urgent_delivery_fee')
         late_payment_fee = request.POST.get('late_payment_fee')
+        
+        print("URGENT:", urgent_delivery_fee, "LATE:", late_payment_fee)  # 👀
+
         services.update_fees_in_system(settings, urgent_delivery_fee, late_payment_fee)
         return redirect('update_fees')
+
     return render(request, 'warehouse_inventory/update_fees.html', {'settings': settings})
 
 ####
@@ -220,3 +230,157 @@ def view_product_catalog(request):
     items = services.get_all_food_items()
     items_with_stock = [{"item": item, "stock": services.get_current_stock(item.item_id)} for item in items]
     return render(request, "warehouse_inventory/product_catalog.html", {"items_with_stock": items_with_stock})
+
+
+
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
+from .models import Item, Order
+from .services import add_item_to_order
+
+def add_to_cart(request, item_id):
+    if request.method == "POST":
+        quantity_requested = int(request.POST.get("quantity", 0))
+        item = get_object_or_404(Item, pk=item_id)
+
+        # You’ll likely have logic here to get or create a temporary order/cart
+        order = services.get_current_order_for_user(request.user)  # implement this
+
+        success, msg = add_item_to_order(order, item, quantity_requested)
+
+        if success:
+            messages.success(request, msg)
+        else:
+            messages.error(request, msg)
+
+    return redirect('product_catalog')
+
+
+
+
+from django.shortcuts import render, get_object_or_404
+from .models import Order, OrderItem
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def view_cart(request):
+    manager = request.user.restaurantmanager
+    system_settings = SystemSettings.objects.first()
+    urgent_delivery_fee = system_settings.urgent_delivery_fee if system_settings else 0
+
+    order, created = Order.objects.get_or_create(restaurant_manager=manager, status='processing')
+    order_items = order.order_items.select_related('batch__item')
+    total_amount = sum(item.quantity * item.unit_price for item in order_items)
+
+    return render(request, "warehouse_inventory/view_cart.html", {"order": order, "order_items": order_items, "total_amount": total_amount, "urgent_delivery_fee": urgent_delivery_fee})
+
+
+from datetime import timedelta
+from django.utils import timezone
+
+@login_required
+def place_order(request):
+    manager = request.user.restaurantmanager
+    order = get_object_or_404(Order, restaurant_manager=manager, status="processing")
+    
+    total = 0
+    for item in order.order_items.all():
+        subtotal = item.quantity * item.unit_price
+        total += subtotal
+
+    if order.urgent_delivery:
+        total += services.get_urgent_delivery_fee()
+
+    payment, created = Payment.objects.get_or_create(
+    order=order,
+    defaults={'amount': total, 'due_date': timezone.now().date() + timedelta(days=7), 'payment_status': 'pending'})
+
+    if not created:
+        payment.amount = total
+        payment.due_date = timezone.now().date() + timedelta(days=7)
+        payment.payment_status = "pending"
+        payment.save()
+
+    order.status = "placed"
+    order.save()
+    return redirect('view_orders')
+
+
+@login_required
+def view_orders(request):
+    manager = request.user.restaurantmanager
+    processing_orders = Order.objects.filter(restaurant_manager=manager, status="processing")
+    placed_orders = Order.objects.filter(restaurant_manager=manager, status="placed")
+    fulfilled_orders = Order.objects.filter(restaurant_manager=manager, status="fulfilled")
+    rejected_orders = Order.objects.filter(status='rejected')
+    canceled_orders = Order.objects.filter(status='canceled')
+
+    return render(request, "warehouse_inventory/view_orders.html", {"processing_orders": processing_orders, "placed_orders": placed_orders, "fulfilled_orders": fulfilled_orders, "rejected_orders": rejected_orders, "canceled_orders": canceled_orders})
+
+
+#############aaaaaaaaaa
+
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Order
+
+def warehouse_orders(request):
+    orders = Order.objects.filter(status='placed').prefetch_related('order_items__batch__item')
+    return render(request, 'warehouse_inventory/warehouse_orders.html', {'orders': orders})
+
+def fulfill_order(request, order_id):
+    order = get_object_or_404(Order, order_id=order_id)
+    order.status = 'fulfilled'
+    order.save()
+    return redirect('warehouse_orders')
+
+from django.db import transaction
+
+def reject_order(request, order_id):
+    order = get_object_or_404(Order, order_id=order_id)
+    if request.method == "POST":
+        with transaction.atomic(): #ensures rollback on error
+            order.status = 'rejected'
+            order.save()
+
+            for item in order.order_items.all():
+                batch = item.batch
+                batch.quantity += item.quantity
+                batch.save()
+        return redirect('warehouse_orders')
+
+
+
+
+
+def cancel_order(request, order_id):
+    order = get_object_or_404(Order, order_id=order_id)
+    if order.status == 'placed':
+        order.status = 'canceled'
+        order.save()
+        for order_item in order.order_items.all(): #roll back items
+            batch = order_item.batch
+            batch.quantity += order_item.quantity
+            batch.save()
+        return redirect('view_orders')
+    else:
+        return redirect('view_orders')
+
+
+
+
+from django.shortcuts import render, redirect
+from django.utils import timezone
+from .models import Order, Payment
+from . import services
+
+@login_required
+def restaurant_manager_billing(request):
+    manager = request.user.restaurantmanager
+    pending_payments = Payment.objects.filter(order__restaurant_manager=manager, payment_status='pending')
+    total_due = sum([payment.amount for payment in pending_payments])
+    if request.method == 'POST': #pay whole bill: mark all as paid
+        for payment in pending_payments:
+            payment.payment_status = 'paid'
+            payment.save()
+        return redirect('restaurant_manager_billing')
+    return render(request, 'warehouse_inventory/restaurant_manager_billing.html', {'pending_payments': pending_payments,'total_due': total_due,})

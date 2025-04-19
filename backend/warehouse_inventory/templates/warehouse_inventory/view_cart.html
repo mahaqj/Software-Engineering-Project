@@ -1,0 +1,52 @@
+<h2>🛒 Your Cart</h2>
+<form method="POST">
+    {% csrf_token %}
+    
+    <div>
+        <label for="urgent_delivery">Urgent Delivery</label>
+        <input type="checkbox" name="urgent_delivery" {% if urgent_delivery %}checked{% endif %}>
+    </div>
+    
+    <div>
+        <p><strong>Urgent Delivery Fee:</strong> ${{ urgent_delivery_fee }}</p>
+    </div>
+    
+    <div>
+        <button type="submit">Update Cart</button>
+    </div>
+</form>
+{% if order_items %}
+<table border="1">
+    <thead>
+        <tr>
+            <th>Item</th>
+            <th>Batch ID</th>
+            <th>Quantity</th>
+            <th>Unit Price</th>
+            <th>Subtotal</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in order_items %}
+        <tr>
+            <td>{{ item.batch.item.item_name }}</td>
+            <td>{{ item.batch.batch_id }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.unit_price }}</td>
+            <td>{{ item.quantity|floatformat:2|add:""|floatformat:2|floatformat:2|add:"" }} × {{ item.unit_price }} = {{ item.quantity|floatformat:2|add:""|floatformat:2|floatformat:2|add:"" }}</td> <!--ew what is even dat-->
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h3>Total: Rs {{ total_amount }}</h3>
+
+<form method="POST" action="{% url 'place_order' %}">
+    {% csrf_token %}
+    <button type="submit">Place Order</button>
+</form>
+
+<a href="{% url 'view_orders' %}">View My Orders</a>
+{% else %}
+<p>Your cart is empty!</p>
+{% endif %}

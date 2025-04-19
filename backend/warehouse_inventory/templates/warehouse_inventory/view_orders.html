@@ -1,0 +1,40 @@
+<h2>📦 Your Orders</h2>
+
+<h3>🛒 Processing (Cart)</h3>
+{% for order in processing_orders %}
+    <p>Order ID: {{ order.order_id }} | Urgent: {{ order.urgent_delivery }}</p>
+{% empty %}
+    <p>No processing orders.</p>
+{% endfor %}
+
+<h3>📬 Placed Orders</h3>
+{% for order in placed_orders %}
+    <p>Order ID: {{ order.order_id }} | Urgent: {{ order.urgent_delivery }}</p>
+    <form method="POST" action="{% url 'cancel_order' order.order_id %}">
+        {% csrf_token %}
+        <button type="submit">Cancel</button>
+    </form>
+{% empty %}
+    <p>No placed orders.</p>
+{% endfor %}
+
+<h3>✅ Fulfilled Orders</h3>
+{% for order in fulfilled_orders %}
+    <p>Order ID: {{ order.order_id }} | Urgent: {{ order.urgent_delivery }}</p>
+{% empty %}
+    <p>No fulfilled orders.</p>
+{% endfor %}
+
+<h3>❌ Rejected Orders</h3>
+{% for order in rejected_orders %}
+    <p>Order ID: {{ order.order_id }} | Urgent: {{ order.urgent_delivery }}</p>
+{% empty %}
+    <p>No rejected orders.</p>
+{% endfor %}
+
+<h3>❌ Canceled Orders</h3>  <!-- New section for canceled orders -->
+{% for order in canceled_orders %}
+    <p>Order ID: {{ order.order_id }} | Urgent: {{ order.urgent_delivery }}</p>
+{% empty %}
+    <p>No canceled orders.</p>
+{% endfor %}

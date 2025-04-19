@@ -1,0 +1,39 @@
+
+{% load static %}
+
+{% block content %}
+<div class="main-content">
+    <h2>Pending Payments</h2>
+
+    {% if pending_payments %}
+    <table border="1" cellspacing="0" cellpadding="8">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Payment ID</th>
+                <th>Amount (Rs.)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for payment in pending_payments %}
+            <tr>
+                <td>{{ payment.order.order_id }}</td>
+                <td>{{ payment.id }}</td>
+                <td>Rs. {{ payment.amount }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3>Total Due: Rs. {{ total_due }}</h3>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Pay Whole Bill</button>
+    </form>
+
+    {% else %}
+    <p>No pending payments 🎉</p>
+    {% endif %}
+</div>
+{% endblock %}

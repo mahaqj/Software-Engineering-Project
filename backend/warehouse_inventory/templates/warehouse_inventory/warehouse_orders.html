@@ -1,0 +1,48 @@
+<h2>📦 All Placed Orders</h2>
+
+{% for order in orders %}
+    <div style="border: 1px solid #aaa; padding: 15px; margin-bottom: 20px; border-radius: 10px;">
+        <p><strong>Order ID:</strong> {{ order.order_id }}</p>
+        <p><strong>Restaurant:</strong> {{ order.restaurant_manager.restaurant_name }}</p>
+        <p><strong>Urgent Delivery:</strong> {{ order.urgent_delivery }}</p>
+        <p><strong>Date:</strong> {{ order.date }}</p>
+
+        <table border="1" style="width:100%; margin-top:10px;">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Batch ID</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order.order_items.all %}
+                <tr>
+                    <td>{{ item.batch.item.item_name }}</td>
+                    <td>{{ item.batch.batch_id }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.unit_price }}</td>
+                    <td>{{ item.quantity|floatformat:2|add:""|floatformat:2|floatformat:2|add:"" }} × {{ item.unit_price }} = {{ item.quantity|floatformat:2|add:""|floatformat:2|floatformat:2|add:"" }}</td> <!--ew what is even dat-->
+                    {% comment %} <td>{{ item.quantity|floatformat:2|add:"0" }} × {{ item.unit_price }} = Rs {{ item.quantity|floatformat:2|add:"0"|floatformat:2|add:"0" }}</td> {% endcomment %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div style="margin-top: 10px;">
+            <form action="{% url 'fulfill_order' order.order_id %}" method="POST" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" style="background-color: green; color: white; padding: 5px 10px; border-radius: 5px;">Fulfill</button>
+            </form>
+
+            <form action="{% url 'reject_order' order.order_id %}" method="POST" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" style="background-color: red; color: white; padding: 5px 10px; border-radius: 5px;">Reject</button>
+            </form>
+        </div>
+    </div>
+{% empty %}
+    <p>No placed orders right now.</p>
+{% endfor %}
