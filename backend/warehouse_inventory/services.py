@@ -15,6 +15,7 @@ def create_warehouse_manager(user_data):
     User = get_user_model()
     user = User.objects.create_user(username=user_data["username"], email=user_data["email"], password=user_data["password"], manager_name=user_data["manager_name"], contact_no=user_data["contact_no"], location=user_data["location"], role="warehouse manager",)
     warehouse_manager = WarehouseManager.objects.create(user=user)
+    SystemSettings.objects.get_or_create(defaults={"urgent_delivery_fee": 5.5, "late_payment_fee": 10})
     return warehouse_manager
     
 def create_restaurant_manager(user_data):
@@ -148,7 +149,7 @@ def add_item_to_order(order, item, quantity_requested):
         if remaining_quantity <= 0:
             break
         take_qty = min(batch.quantity, remaining_quantity)
-        OrderItem.objects.create(order=order, batch=batch, quantity=take_qty,munit_price=item.unit_price)
+        OrderItem.objects.create(order=order, batch=batch, quantity=take_qty, unit_price=item.unit_price)
         batch.quantity -= take_qty
         batch.save()
         used_batches.append((batch.batch_id, take_qty))

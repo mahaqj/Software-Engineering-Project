@@ -206,6 +206,14 @@
                 Special Charges
             </div>
         </a>
+        <div class="link-section">
+            <form action="{% url 'warehouse_orders' %}" method="get"> <!--added-->
+                <button type="submit" class="btn btn-primary">View Orders</button>
+            </form>
+            <form action="{% url 'view_payments' %}" method="get"> <!--added-->
+                <button type="submit" class="btn btn-primary">View Payments</button>
+            </form>
+        </div>
         
         
         <div class="link-section">
@@ -291,9 +299,7 @@
                 
             </div>
         </div>
-        <form action="{% url 'warehouse_orders' %}" method="get"> <!--added-->
-            <button type="submit" class="btn btn-primary">View Orders</button>
-        </form> 
+        
     </div>
 </body>
 

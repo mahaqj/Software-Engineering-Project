@@ -178,6 +178,21 @@
                 View Bill
             </div>
         </a>
+        <a href="{% url 'view_cart' %}"> <!-- added this -->
+            <div class="link-section">
+                View Cart
+            </div>
+        </a>
+        <a href="{% url 'view_orders' %}"> <!-- added this -->
+            <div class="link-section">
+                View Orders
+            </div>
+        </a>
+        <a href="{% url 'restaurant_manager_billing' %}"> <!-- added this -->
+            <div class="link-section">
+                View Bill
+            </div>
+        </a>
         <form action="{% url 'logout' %}" method="post">
             {% csrf_token %}
             <button type="submit">Logout</button>

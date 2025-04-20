@@ -384,3 +384,22 @@ def restaurant_manager_billing(request):
             payment.save()
         return redirect('restaurant_manager_billing')
     return render(request, 'warehouse_inventory/restaurant_manager_billing.html', {'pending_payments': pending_payments,'total_due': total_due,})
+
+#####
+
+
+
+from django.contrib.auth.decorators import login_required
+from .decorators import warehouse_manager_required  # Assuming you have this
+from .models import Payment
+
+# @login_required
+# @warehouse_manager_required
+# def view_payments(request):
+#     payments = Payment.objects.select_related("order", "order__restaurant_manager").all().order_by('-id')
+#     return render(request, "warehouse_inventory/view_payments.html", {"payments": payments})
+@login_required
+@warehouse_manager_required
+def view_payments(request):
+    payments = Payment.objects.select_related("order__restaurant_manager").all()
+    return render(request, "warehouse_inventory/view_payments.html", {"payments": payments})
