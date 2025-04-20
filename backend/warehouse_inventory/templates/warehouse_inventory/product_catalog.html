@@ -33,17 +33,9 @@
         height: 100%;
         background-color: white;
         background: #246314;
-    }
-
-    .main-content{
-        width: 80%;
-        position: fixed;
-        left: 260px;
-        top: 0;
-        height: 100%;
         overflow-y: auto;
-       /* Hide scrollbar for IE, Edge */
-        -ms-overflow-style: none;
+    /* Hide scrollbar for IE, Edge */
+    -ms-overflow-style: none;
         /* Hide scrollbar for Firefox */
         scrollbar-width: none;
     }
@@ -52,6 +44,15 @@
     .aside::-webkit-scrollbar 
     {
     display: none;
+    }
+
+    .main-content{
+        width: 80%;
+        position: fixed;
+        left: 260px;
+        top: 0;
+        height: 100%;
+        
     }
 
     .greeting{
@@ -167,15 +168,20 @@
         <div class="top-part">
             <img src="{% static 'images/mcwall/Steve2.png' %}" alt="Avatar" class="avatar">
         </div>
+        <a href="{% url 'restaurant_home' %}">
+            <div class="link-section">
+                Home
+            </div>
+        </a>
         <a href="{% url 'view_restaurant_manager' request.user.user_id %}">
             <div class="link-section">
                 View Account Details
             </div>
         </a>
         <a href="{% url 'edit_restaurant_manager' request.user.user_id %}">
-            <div class="link-section">
-                Edit Account Details
-            </div>
+        <div class="link-section">
+            Edit Account Details
+        </div>
         </a>
         <a href="{% url 'product_catalog' %}"> <!-- added this -->
             <div class="link-section">
@@ -197,10 +203,12 @@
                 View Bill
             </div>
         </a>
-        <form action="{% url 'logout' %}" method="post">
-            {% csrf_token %}
-            <button type="submit">Logout</button>
-        </form>
+        
+        <a href="{% url 'logout' %}"> <!-- added this -->
+            <div class="link-section">
+                Logout
+            </div>
+        </a>
     </div>
 
 <div class="main-content">

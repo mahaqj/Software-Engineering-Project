@@ -149,6 +149,11 @@
         <div class="top-part">
             <img src="{% static 'images/mcwall/Steve2.png' %}" alt="Avatar" class="avatar">
         </div>
+        <a href="{% url 'restaurant_home' %}">
+            <div class="link-section">
+                Home
+            </div>
+        </a>
         <a href="{% url 'view_restaurant_manager' request.user.user_id %}">
             <div class="link-section">
                 View Account Details
@@ -177,6 +182,12 @@
         <a href="{% url 'restaurant_manager_billing' %}"> <!-- added this -->
             <div class="link-section">
                 View Bill
+            </div>
+        </a>
+        
+        <a href="{% url 'logout' %}"> <!-- added this -->
+            <div class="link-section">
+                Logout
             </div>
         </a>
     </div>

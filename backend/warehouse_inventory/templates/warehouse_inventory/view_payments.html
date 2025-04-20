@@ -1,35 +1,208 @@
-{% comment %} {% extends "base.html" %} {% endcomment %}
-{% block content %}
-<div class="main-content">
-    <h2>All Payments</h2>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Payments - SupplyCraft</title>
+  
+  <link
+    href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Tektur:wght@400..900&display=swap"
+    rel="stylesheet"
+  >
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-size: cover;
+      font-family: "Pixelify Sans", sans-serif;
+      color: #ffffff;
+      background: url("{% static 'images/mcwall/price_list.png' %}") no-repeat center center fixed;
+      background-size: cover;
+    }
+    .aside{
+       width: 250px;
+       position: fixed;
+       left: 0;
+       top: 0;
+       height: 100%;
+       background-color: white;
+       background:rgb(238, 110, 37);
+       overflow-y: auto;
+       /* Hide scrollbar for IE, Edge */
+        -ms-overflow-style: none;
+        /* Hide scrollbar for Firefox */
+        scrollbar-width: none;
+    }
+    
 
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Payment ID</th>
-                <th>Order ID</th>
-                <th>Restaurant</th>
-                <th>Amount</th>
-                <th>Status</th>
-                <th>Due Date</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for payment in payments %}
-            <tr>
-                <td>{{ payment.id }}</td>
-                <td>{{ payment.order.order_id }}</td>
-                <td>{{ payment.order.restaurant_manager.restaurant_name }}</td>
-                <td>Rs. {{ payment.amount }}</td>
-                <td>{{ payment.payment_status }}</td>
-                <td>{{ payment.due_date }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="6">No payments found.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-{% endblock %}
+    .aside::-webkit-scrollbar 
+    {
+    display: none;
+    }
+
+   .main-content{
+       width: 80%;
+       position: fixed;
+       left: 260px;
+       top: 0;
+       height: 100%;
+   }
+
+   .avatar{
+        vertical-align: middle;
+        width: 125px;
+        height: 125px;
+        border-radius: 50%;
+        margin-top: 40px;
+        margin-left: 60px;
+
+    }
+
+    .top-part{
+        width: 100%;
+        height: 190px;
+        align-items: center;
+    }
+
+    .link-section{
+        background-color:rgb(238, 144, 37);
+        height: 40px;
+        text-align: center;
+        margin: 0.5em;
+        padding:0.25em;
+        align-items: center;
+        color: #fff;
+    }
+
+    .link-section:hover{
+        background-color:rgb(238, 110, 37);
+        cursor: pointer;
+    }
+
+    a{
+        text-decoration: none;
+        color: #fff;
+    }
+
+    h2{
+        font-size: 35px;
+    }
+    .greeting{
+        padding-top: 0.8em;
+        padding-left: 0.8em;
+    }
+    .not_greeting{
+        padding-left: 0.8rem;
+    }
+    
+    table{
+        text-align: center;
+        border-spacing: 3px;
+        width: 80%;
+    }
+    tr{
+        text-align: center;
+        margin: 1em;
+    }
+
+    tr:hover{
+        background:  #246314;
+        cursor: pointer;
+    }
+
+    th{
+        background-color: gray;
+        background: #33891d;
+    }
+</style>
+</head>
+<body>
+    <div class="aside">
+        <div class="top-part">
+            <img src="{% static 'images/mcwall/Alex.png' %}" alt="Avatar" class="avatar">
+        </div>
+        <a href="{% url 'restaurant_manager_requests' %}">
+            <div class="link-section">
+                View Requests
+            </div>
+        </a>
+        <a href="{% url 'add_food_item' %}">
+        <div class="link-section">
+            Add Food Item
+        </div>
+        </a>
+        <a href="{% url 'view_food_items' %}">
+            <div class="link-section">
+                View Food Items
+            </div>
+        </a>
+        <a href="{% url 'expired_food_items' %}">
+            <div class="link-section">
+                Track Expiry Dates
+            </div>
+        </a>
+        <a href="{% url 'update_price_list' %}">
+            <div class="link-section">
+                Update Price List
+            </div>
+        </a>
+        <a href="{% url 'restock_items' %}">
+            <div class="link-section">
+                Restock Items
+            </div>
+        </a>
+        <a href="{% url 'update_fees' %}"> 
+            <div class="link-section">
+                Special Charges
+            </div>
+        </a>
+        <a href="{% url 'warehouse_orders' %}"> 
+            <div class="link-section">
+                View Orders
+            </div>
+        </a>
+        <a href="{% url 'view_payments' %}"> 
+            <div class="link-section">
+                View Payments
+            </div>
+        </a>
+        <a href="{% url 'logout' %}"> 
+            <div class="link-section">
+                Logout
+            </div>
+        </a>       
+    </div>
+        {% block content %}
+        <div class="main-content">
+            <h2>All Payments</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Restaurant</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Due Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for payment in payments %}
+                    <tr>
+                        <td>{{ payment.order.order_id }}</td>
+                        <td>{{ payment.order.restaurant_manager.restaurant_name }}</td>
+                        <td>Rs. {{ payment.amount }}</td>
+                        <td>{{ payment.payment_status }}</td>
+                        <td>{{ payment.due_date }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6">No payments found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endblock %}
+    </body>

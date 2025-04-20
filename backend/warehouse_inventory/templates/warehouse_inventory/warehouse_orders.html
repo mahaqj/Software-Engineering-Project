@@ -1,48 +1,226 @@
-<h2>📦 All Placed Orders</h2>
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Cart - SupplyCraft</title>
+  
+  <link
+    href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Tektur:wght@400..900&display=swap"
+    rel="stylesheet"
+  >
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-size: cover;
+      font-family: "Pixelify Sans", sans-serif;
+      color: #ffffff;
+      background: url("{% static 'images/mcwall/price_list.png' %}") no-repeat center center fixed;
+      background-size: cover;
+    }
+    .aside{
+       width: 250px;
+       position: fixed;
+       left: 0;
+       top: 0;
+       height: 100%;
+       background-color: white;
+       background:rgb(238, 110, 37);
+       overflow-y: auto;
+       /* Hide scrollbar for IE, Edge */
+        -ms-overflow-style: none;
+        /* Hide scrollbar for Firefox */
+        scrollbar-width: none;
+    }
+    
 
-{% for order in orders %}
-    <div style="border: 1px solid #aaa; padding: 15px; margin-bottom: 20px; border-radius: 10px;">
-        <p><strong>Order ID:</strong> {{ order.order_id }}</p>
-        <p><strong>Restaurant:</strong> {{ order.restaurant_manager.restaurant_name }}</p>
-        <p><strong>Urgent Delivery:</strong> {{ order.urgent_delivery }}</p>
-        <p><strong>Date:</strong> {{ order.date }}</p>
+    .aside::-webkit-scrollbar 
+    {
+    display: none;
+    }
 
-        <table border="1" style="width:100%; margin-top:10px;">
-            <thead>
-                <tr>
-                    <th>Item</th>
-                    <th>Batch ID</th>
-                    <th>Quantity</th>
-                    <th>Unit Price</th>
-                    <th>Subtotal</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in order.order_items.all %}
-                <tr>
-                    <td>{{ item.batch.item.item_name }}</td>
-                    <td>{{ item.batch.batch_id }}</td>
-                    <td>{{ item.quantity }}</td>
-                    <td>{{ item.unit_price }}</td>
-                    <td>{{ item.quantity|floatformat:2|add:""|floatformat:2|floatformat:2|add:"" }} × {{ item.unit_price }} = {{ item.quantity|floatformat:2|add:""|floatformat:2|floatformat:2|add:"" }}</td> <!--ew what is even dat-->
-                    {% comment %} <td>{{ item.quantity|floatformat:2|add:"0" }} × {{ item.unit_price }} = Rs {{ item.quantity|floatformat:2|add:"0"|floatformat:2|add:"0" }}</td> {% endcomment %}
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+   .main-content{
+       width: 80%;
+       position: fixed;
+       left: 260px;
+       top: 0;
+       height: 100%;
+   }
 
-        <div style="margin-top: 10px;">
-            <form action="{% url 'fulfill_order' order.order_id %}" method="POST" style="display: inline;">
-                {% csrf_token %}
-                <button type="submit" style="background-color: green; color: white; padding: 5px 10px; border-radius: 5px;">Fulfill</button>
-            </form>
+   .avatar{
+        vertical-align: middle;
+        width: 125px;
+        height: 125px;
+        border-radius: 50%;
+        margin-top: 40px;
+        margin-left: 60px;
 
-            <form action="{% url 'reject_order' order.order_id %}" method="POST" style="display: inline;">
-                {% csrf_token %}
-                <button type="submit" style="background-color: red; color: white; padding: 5px 10px; border-radius: 5px;">Reject</button>
-            </form>
+    }
+
+    .top-part{
+        width: 100%;
+        height: 190px;
+        align-items: center;
+    }
+
+    .link-section{
+        background-color:rgb(238, 144, 37);
+        height: 40px;
+        text-align: center;
+        margin: 0.5em;
+        padding:0.25em;
+        align-items: center;
+        color: #fff;
+    }
+
+    .link-section:hover{
+        background-color:rgb(238, 110, 37);
+        cursor: pointer;
+    }
+
+    a{
+        text-decoration: none;
+        color: #fff;
+    }
+
+    h2{
+        font-size: 35px;
+    }
+    .greeting{
+        padding-top: 0.8em;
+        padding-left: 0.8em;
+    }
+    .not_greeting{
+        padding-left: 0.8rem;
+    }
+    
+    table{
+        text-align: center;
+        border-spacing: 3px;
+        width: 80%;
+    }
+    tr{
+        text-align: center;
+        margin: 1em;
+    }
+
+    tr:hover{
+        background:  #246314;
+        cursor: pointer;
+    }
+
+    th{
+        background-color: gray;
+        background: #33891d;
+    }
+</style>
+</head>
+<body>
+    <div class="aside">
+        <div class="top-part">
+            <img src="{% static 'images/mcwall/Alex.png' %}" alt="Avatar" class="avatar">
         </div>
+        <a href="{% url 'restaurant_manager_requests' %}">
+            <div class="link-section">
+                View Requests
+            </div>
+        </a>
+        <a href="{% url 'add_food_item' %}">
+        <div class="link-section">
+            Add Food Item
+        </div>
+        </a>
+        <a href="{% url 'view_food_items' %}">
+            <div class="link-section">
+                View Food Items
+            </div>
+        </a>
+        <a href="{% url 'expired_food_items' %}">
+            <div class="link-section">
+                Track Expiry Dates
+            </div>
+        </a>
+        <a href="{% url 'update_price_list' %}">
+            <div class="link-section">
+                Update Price List
+            </div>
+        </a>
+        <a href="{% url 'restock_items' %}">
+            <div class="link-section">
+                Restock Items
+            </div>
+        </a>
+        <a href="{% url 'update_fees' %}"> 
+            <div class="link-section">
+                Special Charges
+            </div>
+        </a>
+        <a href="{% url 'warehouse_orders' %}"> 
+            <div class="link-section">
+                View Orders
+            </div>
+        </a>
+        <a href="{% url 'view_payments' %}"> 
+            <div class="link-section">
+                View Payments
+            </div>
+        </a>
+        <a href="{% url 'logout' %}"> 
+            <div class="link-section">
+                Logout
+            </div>
+        </a>       
     </div>
-{% empty %}
-    <p>No placed orders right now.</p>
-{% endfor %}
+    <div class="main-content">
+        <h2>📦 All Placed Orders</h2>
+
+        {% for order in orders %}
+            <div style="border: 1px solid #aaa; padding: 15px; margin-bottom: 20px; border-radius: 10px;">
+                <p><strong>Order ID:</strong> {{ order.order_id }}</p>
+                <p><strong>Restaurant:</strong> {{ order.restaurant_manager.restaurant_name }}</p>
+                <p><strong>Urgent Delivery:</strong> {{ order.urgent_delivery }}</p>
+                <p><strong>Date:</strong> {{ order.date }}</p>
+
+                <table border="1" style="width:100%; margin-top:10px;">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Batch ID</th>
+                            <th>Quantity</th>
+                            <th>Unit Price</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order.order_items.all %}
+                        <tr>
+                            <td>{{ item.batch.item.item_name }}</td>
+                            <td>{{ item.batch.batch_id }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>{{ item.unit_price }}</td>
+                            <td>{{ item.quantity|floatformat:2|add:""|floatformat:2|floatformat:2|add:"" }} × {{ item.unit_price }} = {{ item.quantity|floatformat:2|add:""|floatformat:2|floatformat:2|add:"" }}</td> <!--ew what is even dat-->
+                            {% comment %} <td>{{ item.quantity|floatformat:2|add:"0" }} × {{ item.unit_price }} = Rs {{ item.quantity|floatformat:2|add:"0"|floatformat:2|add:"0" }}</td> {% endcomment %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <div style="margin-top: 10px;">
+                    <form action="{% url 'fulfill_order' order.order_id %}" method="POST" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" style="background-color: green; color: white; padding: 5px 10px; border-radius: 5px;">Fulfill</button>
+                    </form>
+
+                    <form action="{% url 'reject_order' order.order_id %}" method="POST" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" style="background-color: red; color: white; padding: 5px 10px; border-radius: 5px;">Reject</button>
+                    </form>
+                </div>
+            </div>
+        {% empty %}
+            <p>No placed orders right now.</p>
+        {% endfor %}
+    </div>
+</body>

@@ -201,10 +201,8 @@ def restock_item(request, item_id):
 @warehouse_manager_required
 def update_fees(request):
     settings = SystemSettings.objects.first() #fetch singleton
-
     if not settings:
         return render(request, 'warehouse_inventory/update_fees.html', {'error': 'System settings are missing.'})
-
     # if request.method == 'POST':
     #     urgent_delivery_fee = request.POST.get('urgent_delivery_fee')
     #     late_payment_fee = request.POST.get('late_payment_fee')
@@ -214,14 +212,9 @@ def update_fees(request):
     if request.method == 'POST':
         urgent_delivery_fee = request.POST.get('urgent_delivery_fee')
         late_payment_fee = request.POST.get('late_payment_fee')
-        
-        print("URGENT:", urgent_delivery_fee, "LATE:", late_payment_fee)  # 👀
-
         services.update_fees_in_system(settings, urgent_delivery_fee, late_payment_fee)
         return redirect('update_fees')
-
     return render(request, 'warehouse_inventory/update_fees.html', {'settings': settings})
-
 ####
 
 @login_required

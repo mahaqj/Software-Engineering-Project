@@ -134,53 +134,61 @@
 </style>
 </head>
 <body>
-    <div class="aside">
-        <div class="top-part">
-            <img src="{% static 'images/mcwall/Alex.png' %}" alt="Avatar" class="avatar">
-        </div>
-        <a href="{% url 'restaurant_manager_requests' %}">
-            <div class="link-section">
-                View Requests
-            </div>
-        </a>
-        <a href="{% url 'add_food_item' %}">
-        <div class="link-section">
-            Add Food Item
-        </div>
-        </a>
-        <a href="{% url 'view_food_items' %}">
-            <div class="link-section">
-                View Food Items
-            </div>
-        </a>
-        <a href="{% url 'expired_food_items' %}">
-            <div class="link-section">
-                Track Expiry Dates
-            </div>
-        </a>
-        <a href="{% url 'update_price_list' %}">
-            <div class="link-section">
-                Update Price List
-            </div>
-        </a>
-        <a href="{% url 'restock_items' %}">
-            <div class="link-section">
-                Restock Items
-            </div>
-        </a>
-        <a href="{% url 'update_fees' %}"> 
-          <div class="link-section">
-              Special Charges
-          </div>
-      </a>
-        
-        <div class="link-section">
-            <form action="{% url 'logout' %}" method="post">
-                {% csrf_token %}
-                <button type="submit">Logout</button>
-            </form>
-        </div>
+  <div class="aside">
+    <div class="top-part">
+        <img src="{% static 'images/mcwall/Alex.png' %}" alt="Avatar" class="avatar">
     </div>
+    <a href="{% url 'restaurant_manager_requests' %}">
+        <div class="link-section">
+            View Requests
+        </div>
+    </a>
+    <a href="{% url 'add_food_item' %}">
+    <div class="link-section">
+        Add Food Item
+    </div>
+    </a>
+    <a href="{% url 'view_food_items' %}">
+        <div class="link-section">
+            View Food Items
+        </div>
+    </a>
+    <a href="{% url 'expired_food_items' %}">
+        <div class="link-section">
+            Track Expiry Dates
+        </div>
+    </a>
+    <a href="{% url 'update_price_list' %}">
+        <div class="link-section">
+            Update Price List
+        </div>
+    </a>
+    <a href="{% url 'restock_items' %}">
+        <div class="link-section">
+            Restock Items
+        </div>
+    </a>
+    <a href="{% url 'update_fees' %}"> 
+        <div class="link-section">
+            Special Charges
+        </div>
+    </a>
+    <a href="{% url 'warehouse_orders' %}"> 
+        <div class="link-section">
+            View Orders
+        </div>
+    </a>
+    <a href="{% url 'view_payments' %}"> 
+        <div class="link-section">
+            View Payments
+        </div>
+    </a>
+    <a href="{% url 'logout' %}"> 
+        <div class="link-section">
+            Logout
+        </div>
+    </a>       
+</div>
     <div class="main-content">
         <div class="table">
         <div class="greeting">

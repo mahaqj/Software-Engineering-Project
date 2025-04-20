@@ -157,12 +157,21 @@
                 Special Charges
             </div>
         </a>
-        <div class="link-section">
-            <form action="{% url 'logout' %}" method="post">
-                {% csrf_token %}
-                <button type="submit">Logout</button>
-            </form>
-        </div>
+        <a href="{% url 'warehouse_orders' %}"> 
+            <div class="link-section">
+                View Orders
+            </div>
+        </a>
+        <a href="{% url 'view_payments' %}"> 
+            <div class="link-section">
+                View Payments
+            </div>
+        </a>
+        <a href="{% url 'logout' %}"> 
+            <div class="link-section">
+                Logout
+            </div>
+        </a>       
     </div>
     <div class="main-content">
         <div class="greeting">

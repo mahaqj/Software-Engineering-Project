@@ -159,7 +159,7 @@
         </a>
         <a href="{% url 'warehouse_orders' %}"> 
             <div class="link-section">
-                Orders
+                View Orders
             </div>
         </a>
         <a href="{% url 'view_payments' %}"> 
@@ -167,21 +167,11 @@
                 View Payments
             </div>
         </a>
-        <div class="link-section">
-            <form action="{% url 'warehouse_orders' %}" method="get"> <!--added-->
-                <button type="submit" class="btn btn-primary">View Orders</button>
-            </form>
-            <form action="{% url 'view_payments' %}" method="get"> <!--added-->
-                <button type="submit" class="btn btn-primary">View Payments</button>
-            </form>
-        </div>
-        <div class="link-section">
-            <form action="{% url 'logout' %}" method="post">
-                {% csrf_token %}
-                <button type="submit">Logout</button>
-            </form>
-        </div>
-        
+        <a href="{% url 'logout' %}"> 
+            <div class="link-section">
+                Logout
+            </div>
+        </a>       
     </div>
     <div class="main-content">
         <div class="greeting">
@@ -205,6 +195,11 @@
             <tbody>
             {% for data in items_with_stock %}
             <tr>
+                
+                <td>{{ data.item.item_id }}</td>
+                <td>{{ data.item.item_name }}</td>
+                <td>{{ data.item.category }}</td>
+                <td>{{ data.item.unit_price }}</td>
                 <td>
                     {% if data.item.image %}
                         <img src="{{ data.item.image.url }}" alt="{{ data.item.item_name }}" width="100" height="100">
@@ -212,11 +207,6 @@
                         No Image
                     {% endif %}
                 </td>
-                <td>{{ data.item.item_id }}</td>
-                <td>{{ data.item.item_name }}</td>
-                <td>{{ data.item.category }}</td>
-                <td>{{ data.item.unit_price }}</td>
-                
                 <td>
                     {% if data.item.batches.all %}
                         <ul>

@@ -171,6 +171,11 @@
         <div class="top-part">
             <img src="{% static 'images/mcwall/Steve2.png' %}" alt="Avatar" class="avatar">
         </div>
+        <a href="{% url 'restaurant_home' %}">
+            <div class="link-section">
+                Home
+            </div>
+        </a>
         <a href="{% url 'view_restaurant_manager' request.user.user_id %}">
             <div class="link-section">
                 View Account Details
@@ -184,6 +189,27 @@
         <a href="{% url 'product_catalog' %}"> <!-- added this -->
             <div class="link-section">
                 Product Catalog
+            </div>
+        </a>
+        <a href="{% url 'view_cart' %}"> <!-- added this -->
+            <div class="link-section">
+                View Cart
+            </div>
+        </a>
+        <a href="{% url 'view_orders' %}"> <!-- added this -->
+            <div class="link-section">
+                View Orders
+            </div>
+        </a>
+        <a href="{% url 'restaurant_manager_billing' %}"> <!-- added this -->
+            <div class="link-section">
+                View Bill
+            </div>
+        </a>
+        
+        <a href="{% url 'logout' %}"> <!-- added this -->
+            <div class="link-section">
+                Logout
             </div>
         </a>
     </div>
@@ -220,12 +246,7 @@
         </table>
    
 
-    <!-- Edit Account Details Button -->
-    <a href="{% url 'edit_restaurant_manager' manager.user_id %}">
-        <button>Edit Account Details</button>
-    </a>
+  
 
-    <br><br>
-    <a href="{% url 'restaurant_home' %}">Back</a>
 </body>
 </html>
