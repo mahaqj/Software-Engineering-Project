@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Notification</title>
+</head>
+<body>
+    <header>
+        <h1>Send Notification to Restaurant Manager</h1>
+    </header>
+
+    <main>
+        <h2>Write Your Message</h2>
+
+        <form method="POST">
+            {% csrf_token %}
+            
+            <!-- Textarea for message -->
+            <textarea name="message_content" rows="6" placeholder="Enter your message here..." required></textarea>
+
+            <!-- Hidden field for restaurant manager id -->
+            <input type="hidden" name="restaurant_manager_id" value="{{ restaurant_manager.user_id }}">
+
+            <!-- Submit button to send message -->
+            <button type="submit">Notify</button>
+        </form>
+
+    </main>
+</body>
+</html>

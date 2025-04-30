@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Approved Restaurant Managers</title>
+</head>
+<body>
+
+<h2>Approved Restaurant Managers</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Manager Name</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Contact No</th>
+            <th>Location</th>
+            <th>Restaurant Name</th>
+            <th>Bank Account No</th>
+            <th>Notify</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for rm in approved_managers %}
+        <tr>
+            <td>{{ rm.user.manager_name }}</td>
+            <td>{{ rm.user.username }}</td>
+            <td>{{ rm.user.email }}</td>
+            <td>{{ rm.user.contact_no }}</td>
+            <td>{{ rm.user.location }}</td>
+            <td>{{ rm.restaurant_name }}</td>
+            <td>{{ rm.bank_acc_no }}</td>
+            <td>
+                <form action="{% url 'send_notification' rm.user_id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Notify Manager</button>
+                </form>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="8">No approved restaurant managers found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</body>
+</html>

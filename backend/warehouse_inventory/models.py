@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
+from django.utils import timezone
 
 # Create your models here.
 
@@ -121,7 +122,6 @@ class Payment(models.Model): #associated w order
         return f"Payment {self.payment_id} - {self.payment_status} for Order {self.order.order_id}"
     
 ######################################################################################################################################################
-from django.utils import timezone
 
 class Message(models.Model):
     id = models.AutoField(primary_key=True)

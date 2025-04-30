@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Overall Report</title>
+</head>
+<body style="font-family: sans-serif; padding: 2em;">
+    <h1>📊 Warehouse Overall Report</h1>
+
+    <h3>Most Ordered Item:</h3>
+    {% if most_ordered %}
+        <p><strong>{{ most_ordered.batch__item__item_name }}</strong> - {{ most_ordered.total_quantity }} units ordered</p>
+    {% else %}
+        <p>No orders yet.</p>
+    {% endif %}
+
+    <h3>Total Items Ordered:</h3>
+    <p>{{ total_items }}</p>
+
+    <h3>Total Revenue from Paid Orders:</h3>
+    <p>Rs {{ total_revenue }}</p>
+
+</body>
+</html>

@@ -2,12 +2,12 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth.views import LogoutView
-from .views import CustomLoginView, restaurant_manager_signup, restaurant_home_view, warehouse_home_view
-from .views import delete_food_item, edit_restaurant_manager, view_restaurant_manager, expired_food_items
-from .views import restaurant_manager_requests_view, process_request, add_food_item, view_food_items
+from .views import CustomLoginView, restaurant_manager_signup, restaurant_home_view, warehouse_home_view, restaurant_manager_notifications
+from .views import delete_food_item, edit_restaurant_manager, view_restaurant_manager, expired_food_items, send_notification
+from .views import restaurant_manager_requests_view, process_request, add_food_item, view_food_items, approved_restaurant_managers
 from .views import update_fees, warehouse_manager_signup, update_price_list, restock_items, restock_item, delete_batch
-from .views import view_product_catalog, add_to_cart, view_cart, place_order, view_orders, warehouse_orders
-from .views import fulfill_order, reject_order, cancel_order, restaurant_manager_billing, view_payments
+from .views import view_product_catalog, add_to_cart, view_cart, place_order, view_orders, warehouse_orders, overall_report
+from .views import fulfill_order, reject_order, cancel_order, restaurant_manager_billing, view_payments, warehouse_monthly_earnings
 
 urlpatterns = [
     path("signup/", restaurant_manager_signup, name="signup"),
@@ -38,8 +38,11 @@ urlpatterns = [
     path("warehouse-orders/fulfill/<int:order_id>/", fulfill_order, name="fulfill_order"),
     path("warehouse-orders/reject/<int:order_id>/", reject_order, name="reject_order"),
     path("orders/cancel/<int:order_id>/", cancel_order, name="cancel_order"),
-    #path("send_message/<int:receiver_id>/", send_message, name="send_message"),
-    #path('restaurant_manager_billing/', restaurant_manager_billing, name='restaurant_manager_billing'),
     path('billing/', restaurant_manager_billing, name='restaurant_manager_billing'),
     path("view_payments/", view_payments, name="view_payments"),
+    path('monthly-earnings/', warehouse_monthly_earnings, name='monthly_earnings'),
+    path('warehouse/overall-report/', overall_report, name='overall_report'),
+    path('warehouse/approved-restaurant-managers/', approved_restaurant_managers, name='approved_restaurant_managers'),
+    path('send_notification/<int:restaurant_manager_id>/', send_notification, name='send_notification'),
+    path('restaurant_manager/notifications/', restaurant_manager_notifications, name='restaurant_manager_notifications'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

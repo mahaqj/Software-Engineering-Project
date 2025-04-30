@@ -11,6 +11,23 @@
     href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Tektur:wght@400..900&display=swap"
     rel="stylesheet"
   >
+  <link
+    rel="stylesheet"
+    media="screen"
+    href="https://fontlibrary.org//face/minecraftia"
+    type="text/css"
+  />
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'MinecraftiaRegular', sans-serif; /* Updated font */
+      background: url("{% static 'images/mcwall/warehouse_home_1.png' %}") no-repeat center center fixed;
+      background-size: cover;
+      cursor: url("{% static 'images/cursor.png' %}") 16 16, auto;
+      color: #ffffff;
+    }
 <style>
      body {
       margin: 0;
@@ -298,7 +315,15 @@
                 
             </div>
         </div>
-        
+        <a href="{% url 'monthly_earnings' %}"> <!--addeddddd-->
+            <button>View Monthly Earnings</button>
+        </a>
+        <a href="{% url 'overall_report' %}"> <!--addeddddd-->
+            <button>View Overall Report</button>
+        </a>
+        <a href="{% url 'approved_restaurant_managers' %}">
+            <button>View Approved Restaurant Managers</button>
+        </a>
     </div>
 </body>
 

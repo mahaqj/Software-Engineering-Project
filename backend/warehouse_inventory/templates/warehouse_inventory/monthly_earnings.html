@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Monthly Earnings</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 2em;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        ul {
+            background: white;
+            padding: 1em;
+            border-radius: 8px;
+            list-style-type: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        li {
+            margin: 0.5em 0;
+            font-size: 1.1em;
+            color: #222;
+        }
+    </style>
+</head>
+<body>
+    <h1>Monthly Earnings</h1>
+    <ul>
+        {% for entry in monthly_earnings %}
+            <li>{{ entry.month|date:"F Y" }} — ${{ entry.total }}</li>
+        {% empty %}
+            <li>No earnings data available.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

@@ -1,11 +1,18 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required
 from .forms import RestaurantManagerSignupForm, WarehouseManagerSignupForm, ItemForm, BatchForm
 from . import services
 from .decorators import warehouse_manager_required, restaurant_manager_required
-from .models import SystemSettings
+from .models import SystemSettings, Item, Order, OrderItem, Payment, RestaurantManager
+from django.contrib import messages
+from .services import add_item_to_order
+from datetime import timedelta, date
+from django.utils import timezone
+from django.db import transaction
+from django.db.models import Sum
+from django.db.models.functions import TruncMonth
 
 ####################################################### ACCOUNTS #######################################################
 
@@ -195,7 +202,7 @@ def restock_item(request, item_id):
             services.restock_item(item_id, int(quantity), expiry_date)
     return redirect("restock_items")
 
-####
+#----------------------------------------------------------------------------------------------------------------------#
 
 @login_required
 @warehouse_manager_required
@@ -203,19 +210,14 @@ def update_fees(request):
     settings = SystemSettings.objects.first() #fetch singleton
     if not settings:
         return render(request, 'warehouse_inventory/update_fees.html', {'error': 'System settings are missing.'})
-    # if request.method == 'POST':
-    #     urgent_delivery_fee = request.POST.get('urgent_delivery_fee')
-    #     late_payment_fee = request.POST.get('late_payment_fee')
-    #     services.update_fees_in_system(settings, urgent_delivery_fee, late_payment_fee)
-    #     return redirect('update_fees')
-
     if request.method == 'POST':
         urgent_delivery_fee = request.POST.get('urgent_delivery_fee')
         late_payment_fee = request.POST.get('late_payment_fee')
         services.update_fees_in_system(settings, urgent_delivery_fee, late_payment_fee)
         return redirect('update_fees')
     return render(request, 'warehouse_inventory/update_fees.html', {'settings': settings})
-####
+
+#----------------------------------------------------------------------------------------------------------------------#
 
 @login_required
 @restaurant_manager_required
@@ -224,80 +226,57 @@ def view_product_catalog(request):
     items_with_stock = [{"item": item, "stock": services.get_current_stock(item.item_id)} for item in items]
     return render(request, "warehouse_inventory/product_catalog.html", {"items_with_stock": items_with_stock})
 
-
-
-from django.shortcuts import get_object_or_404, redirect
-from django.contrib import messages
-from .models import Item, Order
-from .services import add_item_to_order
+#----------------------------------------------------------------------------------------------------------------------#
 
 def add_to_cart(request, item_id):
     if request.method == "POST":
         quantity_requested = int(request.POST.get("quantity", 0))
         item = get_object_or_404(Item, pk=item_id)
-
-        # You’ll likely have logic here to get or create a temporary order/cart
         order = services.get_current_order_for_user(request.user)  # implement this
-
         success, msg = add_item_to_order(order, item, quantity_requested)
-
         if success:
             messages.success(request, msg)
         else:
             messages.error(request, msg)
-
     return redirect('product_catalog')
 
-
-
-
-from django.shortcuts import render, get_object_or_404
-from .models import Order, OrderItem
-from django.contrib.auth.decorators import login_required
+#----------------------------------------------------------------------------------------------------------------------#
 
 @login_required
 def view_cart(request):
     manager = request.user.restaurantmanager
     system_settings = SystemSettings.objects.first()
     urgent_delivery_fee = system_settings.urgent_delivery_fee if system_settings else 0
-
     order, created = Order.objects.get_or_create(restaurant_manager=manager, status='processing')
     order_items = order.order_items.select_related('batch__item')
     total_amount = sum(item.quantity * item.unit_price for item in order_items)
-
     return render(request, "warehouse_inventory/view_cart.html", {"order": order, "order_items": order_items, "total_amount": total_amount, "urgent_delivery_fee": urgent_delivery_fee})
 
-
-from datetime import timedelta
-from django.utils import timezone
+#----------------------------------------------------------------------------------------------------------------------#
 
 @login_required
 def place_order(request):
     manager = request.user.restaurantmanager
     order = get_object_or_404(Order, restaurant_manager=manager, status="processing")
-    
     total = 0
     for item in order.order_items.all():
         subtotal = item.quantity * item.unit_price
         total += subtotal
-
     if order.urgent_delivery:
         total += services.get_urgent_delivery_fee()
-
     payment, created = Payment.objects.get_or_create(
     order=order,
     defaults={'amount': total, 'due_date': timezone.now().date() + timedelta(days=7), 'payment_status': 'pending'})
-
     if not created:
         payment.amount = total
         payment.due_date = timezone.now().date() + timedelta(days=7)
         payment.payment_status = "pending"
         payment.save()
-
     order.status = "placed"
     order.save()
     return redirect('view_orders')
 
+#----------------------------------------------------------------------------------------------------------------------#
 
 @login_required
 def view_orders(request):
@@ -307,18 +286,15 @@ def view_orders(request):
     fulfilled_orders = Order.objects.filter(restaurant_manager=manager, status="fulfilled")
     rejected_orders = Order.objects.filter(status='rejected')
     canceled_orders = Order.objects.filter(status='canceled')
-
     return render(request, "warehouse_inventory/view_orders.html", {"processing_orders": processing_orders, "placed_orders": placed_orders, "fulfilled_orders": fulfilled_orders, "rejected_orders": rejected_orders, "canceled_orders": canceled_orders})
 
-
-#############aaaaaaaaaa
-
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import Order
+#----------------------------------------------------------------------------------------------------------------------#
 
 def warehouse_orders(request):
     orders = Order.objects.filter(status='placed').prefetch_related('order_items__batch__item')
     return render(request, 'warehouse_inventory/warehouse_orders.html', {'orders': orders})
+
+#----------------------------------------------------------------------------------------------------------------------#
 
 def fulfill_order(request, order_id):
     order = get_object_or_404(Order, order_id=order_id)
@@ -326,7 +302,7 @@ def fulfill_order(request, order_id):
     order.save()
     return redirect('warehouse_orders')
 
-from django.db import transaction
+#----------------------------------------------------------------------------------------------------------------------#
 
 def reject_order(request, order_id):
     order = get_object_or_404(Order, order_id=order_id)
@@ -341,9 +317,7 @@ def reject_order(request, order_id):
                 batch.save()
         return redirect('warehouse_orders')
 
-
-
-
+#----------------------------------------------------------------------------------------------------------------------#
 
 def cancel_order(request, order_id):
     order = get_object_or_404(Order, order_id=order_id)
@@ -358,18 +332,12 @@ def cancel_order(request, order_id):
     else:
         return redirect('view_orders')
 
-
-
-
-from django.shortcuts import render, redirect
-from django.utils import timezone
-from .models import Order, Payment
-from . import services
+#----------------------------------------------------------------------------------------------------------------------#
 
 @login_required
 def restaurant_manager_billing(request):
     manager = request.user.restaurantmanager
-    pending_payments = Payment.objects.filter(order__restaurant_manager=manager, payment_status='pending')
+    pending_payments = Payment.objects.filter(order__restaurant_manager=manager, payment_status='pending', order__status='fulfilled')
     total_due = sum([payment.amount for payment in pending_payments])
     if request.method == 'POST': #pay whole bill: mark all as paid
         for payment in pending_payments:
@@ -378,21 +346,103 @@ def restaurant_manager_billing(request):
         return redirect('restaurant_manager_billing')
     return render(request, 'warehouse_inventory/restaurant_manager_billing.html', {'pending_payments': pending_payments,'total_due': total_due,})
 
-#####
+#----------------------------------------------------------------------------------------------------------------------#
 
-
-
-from django.contrib.auth.decorators import login_required
-from .decorators import warehouse_manager_required  # Assuming you have this
-from .models import Payment
-
-# @login_required
-# @warehouse_manager_required
-# def view_payments(request):
-#     payments = Payment.objects.select_related("order", "order__restaurant_manager").all().order_by('-id')
-#     return render(request, "warehouse_inventory/view_payments.html", {"payments": payments})
 @login_required
 @warehouse_manager_required
 def view_payments(request):
     payments = Payment.objects.select_related("order__restaurant_manager").all()
     return render(request, "warehouse_inventory/view_payments.html", {"payments": payments})
+
+#----------------------------------------------------------------------------------------------------------------------#
+
+def warehouse_monthly_earnings(request):
+    payments = Payment.objects.filter(payment_status='paid', order__status='fulfilled')
+    current_year = date.today().year
+    payments = payments.filter(order__date__year=current_year) #limit to current year
+    monthly_earnings = (payments.annotate(month=TruncMonth('order__date')).values('month').annotate(total=Sum('amount')).order_by('month')) #group by month and sum
+    return render(request, 'warehouse_inventory/monthly_earnings.html', {'monthly_earnings': monthly_earnings})
+
+#----------------------------------------------------------------------------------------------------------------------#
+
+@login_required
+def overall_report(request):
+    most_ordered = (OrderItem.objects.values('batch__item__item_name').annotate(total_quantity=Sum('quantity')).order_by('-total_quantity').first()) #get most ordered item (by quantity)
+    total_items = OrderItem.objects.aggregate(total=Sum('quantity'))['total'] or 0
+    from .models import Payment #total revenue from paid payments
+    total_revenue = Payment.objects.filter(payment_status='paid').aggregate(total=Sum('amount'))['total'] or 0
+    return render(request, 'warehouse_inventory/overall_report.html', {'most_ordered': most_ordered, 'total_items': total_items, 'total_revenue': total_revenue,})
+
+#----------------------------------------------------------------------------------------------------------------------#
+
+@login_required
+def approved_restaurant_managers(request):
+    approved_managers = RestaurantManager.objects.filter(status='approved')
+    return render(request, 'warehouse_inventory/approved_restaurant_managers.html', {'approved_managers': approved_managers})
+
+
+
+
+
+
+
+from django.shortcuts import render, redirect
+from .models import RestaurantManager, Message, WarehouseManager
+from django.contrib.auth.decorators import login_required
+
+
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import RestaurantManager, Message, WarehouseManager
+from django.contrib.auth.decorators import login_required
+
+from django.shortcuts import get_object_or_404
+
+# @login_required
+# def send_notification(request, restaurant_manager_id):
+#     restaurant_manager = RestaurantManager.objects.get(pk=restaurant_manager_id)
+#     warehouse_manager = WarehouseManager.get_instance()  # Assumes there's only one warehouse manager
+    
+#     if request.method == 'POST':
+#         content = request.POST['content']
+#         # Create the message
+#         Message.objects.create(
+#             sender=warehouse_manager,
+#             receiver=restaurant_manager,
+#             content=content,
+#         )
+#         return redirect('approved_restaurant_managers')  # Redirect to approved managers list
+    
+#     return render(request, 'send_notification.html', {'restaurant_manager': restaurant_manager})
+@login_required
+def send_notification(request, restaurant_manager_id):
+    restaurant_manager = RestaurantManager.objects.get(pk=restaurant_manager_id)
+    warehouse_manager = WarehouseManager.get_instance() 
+    
+    if request.method == 'POST':
+        content = request.POST.get('message_content') 
+        if content: 
+            #message
+            Message.objects.create(sender=warehouse_manager, receiver=restaurant_manager, content=content,)
+            return redirect('approved_restaurant_managers')  # Redirect to approved managers list
+        else:
+            messages.error(request, "Message content cannot be empty.")
+    
+    return render(request, 'warehouse_inventory/send_notification.html', {'restaurant_manager': restaurant_manager})
+
+
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from .models import Message
+@login_required
+def restaurant_manager_notifications(request):
+    try:
+        # Get the RestaurantManager associated with the logged-in user
+        restaurant_manager = RestaurantManager.objects.get(user=request.user)
+
+        # Get all messages for this restaurant manager
+        notifications = Message.objects.filter(receiver=restaurant_manager)
+
+        return render(request, 'warehouse_inventory/restaurant_manager_notifications.html', {'notifications': notifications})
+    except RestaurantManager.DoesNotExist:
+        # Handle the case where the user is not a restaurant manager (or other error)
+        return redirect('error_page')  # Redirect to an error page if needed

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Notifications</title>
+</head>
+<body>
+    <header>
+        <h1>Notifications</h1>
+    </header>
+
+    <main>
+        <h2>Your Messages from Warehouse Manager</h2>
+
+        {% if notifications %}
+            <ul>
+                {% for notification in notifications %}
+                    <li>
+                        <strong>Message:</strong> {{ notification.content }} <br>
+                        <strong>Sent At:</strong> {{ notification.date_sent|date:"Y-m-d H:i" }} <br>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No notifications yet!</p>
+        {% endif %}
+
+    </main>
+</body>
+</html>
