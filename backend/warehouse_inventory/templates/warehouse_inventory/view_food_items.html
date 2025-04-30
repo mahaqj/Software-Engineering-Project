@@ -210,11 +210,6 @@
             <tbody>
             {% for data in items_with_stock %}
             <tr>
-                
-                <td>{{ data.item.item_id }}</td>
-                <td>{{ data.item.item_name }}</td>
-                <td>{{ data.item.category }}</td>
-                <td>{{ data.item.unit_price }}</td>
                 <td>
                     {% if data.item.image %}
                         <img src="{{ data.item.image.url }}" alt="{{ data.item.item_name }}" width="100" height="100">
@@ -222,6 +217,11 @@
                         No Image
                     {% endif %}
                 </td>
+                <td>{{ data.item.item_id }}</td>
+                <td>{{ data.item.item_name }}</td>
+                <td>{{ data.item.category }}</td>
+                <td>{{ data.item.unit_price }}</td>
+                
                 <td>
                     {% if data.item.batches.all %}
                         <ul>
