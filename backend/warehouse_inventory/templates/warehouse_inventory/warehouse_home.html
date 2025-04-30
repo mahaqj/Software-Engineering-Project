@@ -38,12 +38,24 @@
         height: 100%;
         background-color: white;
         background:rgb(238, 110, 37);
+        overflow-y: auto;
+        /* Hide scrollbar for IE, Edge */
+        -ms-overflow-style: none;
+
+        /* Hide scrollbar for Firefox */
+        scrollbar-width: none;
+    }
+    
+
+    .aside::-webkit-scrollbar 
+    {
+    display: none;
     }
 
     .main-content{
         width: 80%;
         position: fixed;
-        right: 0;
+        left: 260px;
         top: 0;
         height: 100%;
     }
@@ -134,6 +146,23 @@
         color: #fff;
     }
 
+    .notif{
+       display: none;
+    }
+
+    .scroller{
+        width: none;
+    }
+
+    /* Legacy browsers with `::-webkit-scrollbar-*` support */
+@supports selector(::-webkit-scrollbar) {
+    
+    
+    .scroller::-webkit-scrollbar {
+        width: none;
+    }
+}
+
 </style>
 </head>
 <body>
@@ -172,22 +201,34 @@
                 Restock Items
             </div>
         </a>
-        <a href="{% url 'update_fees' %}"> <!-- added this -->
+        <a href="{% url 'update_fees' %}"> 
             <div class="link-section">
                 Special Charges
             </div>
         </a>
-        
-        <div class="link-section">
-            <form action="{% url 'logout' %}" method="post">
-                {% csrf_token %}
-                <button type="submit">Logout</button>
-            </form>
-        </div>
+        <a href="{% url 'warehouse_orders' %}"> 
+            <div class="link-section">
+                View Orders
+            </div>
+        </a>
+        <a href="{% url 'view_payments' %}"> 
+            <div class="link-section">
+                View Payments
+            </div>
+        </a>
+        <a href="{% url 'logout' %}"> 
+            <div class="link-section">
+                Logout
+            </div>
+        </a>       
     </div>
+    
     <div class="main-content">
         <div class="greeting">
             <h2>Welcome, {{ request.user.manager_name }}!</h2>
+        </div>
+        <div class="notif">
+            <h3>Hi, low stock</h3>
         </div>
         <div class="flex-container">
             <div class="idea-card">
@@ -257,7 +298,8 @@
                 
             </div>
         </div>
-    
+        
     </div>
 </body>
+
 </html>

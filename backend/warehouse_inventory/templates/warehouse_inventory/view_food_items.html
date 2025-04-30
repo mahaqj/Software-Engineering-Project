@@ -28,12 +28,23 @@
        height: 100%;
        background-color: white;
        background:rgb(238, 110, 37);
-   }
+       overflow-y: auto;
+       /* Hide scrollbar for IE, Edge */
+        -ms-overflow-style: none;
+        /* Hide scrollbar for Firefox */
+        scrollbar-width: none;
+    }
+    
+
+    .aside::-webkit-scrollbar 
+    {
+    display: none;
+    }
 
    .main-content{
        width: 80%;
        position: fixed;
-       right: 0;
+       left: 260px;
        top: 0;
        height: 100%;
    }
@@ -141,13 +152,26 @@
                 Restock Items
             </div>
         </a>
-        
-        <div class="link-section">
-            <form action="{% url 'logout' %}" method="post">
-                {% csrf_token %}
-                <button type="submit">Logout</button>
-            </form>
-        </div>
+        <a href="{% url 'update_fees' %}"> 
+            <div class="link-section">
+                Special Charges
+            </div>
+        </a>
+        <a href="{% url 'warehouse_orders' %}"> 
+            <div class="link-section">
+                View Orders
+            </div>
+        </a>
+        <a href="{% url 'view_payments' %}"> 
+            <div class="link-section">
+                View Payments
+            </div>
+        </a>
+        <a href="{% url 'logout' %}"> 
+            <div class="link-section">
+                Logout
+            </div>
+        </a>       
     </div>
     <div class="main-content">
         <div class="greeting">
@@ -157,11 +181,12 @@
         <table>
             <thead>
                 <tr>
+                    <th>Image</th>
                     <th>Item ID</th>
                     <th>Name</th>
                     <th>Category</th>
                     <th>Unit Price</th>
-                    <th>Image</th>
+                    
                     <th>Batches</th>
                     <th>Delete</th>
                     <th>Current Stock</th>
@@ -170,6 +195,7 @@
             <tbody>
             {% for data in items_with_stock %}
             <tr>
+                
                 <td>{{ data.item.item_id }}</td>
                 <td>{{ data.item.item_name }}</td>
                 <td>{{ data.item.category }}</td>

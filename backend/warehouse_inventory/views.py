@@ -215,7 +215,6 @@ def update_fees(request):
         services.update_fees_in_system(settings, urgent_delivery_fee, late_payment_fee)
         return redirect('update_fees')
     return render(request, 'warehouse_inventory/update_fees.html', {'settings': settings})
-
 ####
 
 @login_required
@@ -378,7 +377,6 @@ def restaurant_manager_billing(request):
             payment.save()
         return redirect('restaurant_manager_billing')
     return render(request, 'warehouse_inventory/restaurant_manager_billing.html', {'pending_payments': pending_payments,'total_due': total_due,})
-
 
 #####
 

@@ -45,3 +45,24 @@ media/
 # Ignore coverage reports
 .coverage
 htmlcov/
+backend/warehouse_inventory/static/css/base.css
+backend/warehouse_inventory/static/fonts/minecraft_font.ttf
+backend/warehouse_inventory/static/images/mc2.png
+backend/warehouse_inventory/static/images/mc3.jpg
+backend/warehouse_inventory/static/images/mc4.jpg
+backend/warehouse_inventory/static/images/mcwall/Minecraft_Trails&Tales_.Net_1080x1920.png
+backend/warehouse_inventory/static/images/mcwall/Minecraft_Trails&Tales_.Net_2048x2048.png
+backend/warehouse_inventory/static/images/mcwall/Minecraft_Trails&Tales_.Net_560x1440.png
+backend/warehouse_inventory/static/images/mcwall/Minecraft_Trails&Tales_.Net_800x450.png
+backend/warehouse_inventory/static/images/mcwall/Minecraft_Trails&Tales_.Net_800x800.png
+backend/warehouse_inventory/static/images/mcwall/wallpaper_minecraft_adventure_1080x1920.png
+backend/warehouse_inventory/static/images/mcwall/wallpaper_minecraft_adventure_2048x2048.png
+backend/warehouse_inventory/static/images/mcwall/wallpaper_minecraft_adventure_2560x1440.png
+backend/warehouse_inventory/static/images/mcwall/wallpaper_minecraft_adventure_Adventure_2058x1440.png
+backend/warehouse_inventory/static/images/mcwall/wallpaper_minecraft_bedrock_edition_560x1440.png
+backend/warehouse_inventory/static/images/mcwall/wallpaper_minecraft_bedrock_edition_800x450.png
+backend/warehouse_inventory/static/images/mcwall/wallpaper_minecraft_bedrock_edition_800x800.png
+backend/warehouse_inventory/static/images/mcwall/wallpaper_minecraft_burberry_1080x1920.png
+backend/warehouse_inventory/static/images/mcwall/minecraft_title (1).png
+backend/warehouse_inventory/migrations/0001_initial.py
+backend/warehouse_inventory/migrations/0001_initial.py
