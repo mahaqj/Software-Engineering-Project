@@ -27,16 +27,8 @@
       background-size: cover;
       cursor: url("{% static 'images/cursor.png' %}") 16 16, auto;
       color: #ffffff;
-    }
-<style>
-     body {
-      margin: 0;
-      padding: 0;
-      /* Example: Minecraft-like background image */
-      background: url("{% static 'images/minecraft_bg.jpg' %}") no-repeat center center fixed;
-      background-size: cover;
-      font-family: "Pixelify Sans", sans-serif;
-      color: #ffffff;
+      font-size: small;
+
      
       /* Custom background */
       background: url("{% static 'images/mcwall/warehouse_home_1.png' %}") no-repeat center center fixed;
@@ -233,6 +225,21 @@
                 View Payments
             </div>
         </a>
+        <a href="{% url 'monthly_earnings' %}"> <!--addeddddd-->
+            <div class="link-section">
+                View Monthly Earnings
+            </div>
+        </a>
+        <a href="{% url 'overall_report' %}"> <!--addeddddd-->
+            <div class="link-section">
+                View Overall Report
+            </div>
+        </a>
+        <a href="{% url 'approved_restaurant_managers' %}">
+            <div class="link-section">
+                Approved Restaurants
+            </div>
+        </a>
         <a href="{% url 'logout' %}"> 
             <div class="link-section">
                 Logout
@@ -315,15 +322,9 @@
                 
             </div>
         </div>
-        <a href="{% url 'monthly_earnings' %}"> <!--addeddddd-->
-            <button>View Monthly Earnings</button>
-        </a>
-        <a href="{% url 'overall_report' %}"> <!--addeddddd-->
-            <button>View Overall Report</button>
-        </a>
-        <a href="{% url 'approved_restaurant_managers' %}">
-            <button>View Approved Restaurant Managers</button>
-        </a>
+        
+       
+        
     </div>
 </body>
 
