@@ -213,6 +213,9 @@ def cancel_order_and_restore_stock(order_id):
             batch.save()
     return order
 
+def get_pending_bills(manager):
+    return Payment.objects.filter(order__restaurant_manager=manager, payment_status='pending', order__status='fulfilled')
+
 def mark_payments_as_paid(manager):
     pending_payments = Payment.objects.filter(order__restaurant_manager=manager, payment_status='pending', order__status='fulfilled')
     total_due = sum([payment.amount for payment in pending_payments])
@@ -222,7 +225,7 @@ def mark_payments_as_paid(manager):
     return pending_payments, total_due
 
 def get_all_payments():
-    return Payment.objects.select_related("order__restaurant_manager").all()
+    return Payment.objects.select_related("order__restaurant_manager").filter(order__status="fulfilled")
 
 def get_monthly_earnings_for_current_year():
     current_year = date.today().year
