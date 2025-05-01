@@ -5,14 +5,8 @@ from django.contrib.auth.decorators import login_required
 from .forms import RestaurantManagerSignupForm, WarehouseManagerSignupForm, ItemForm, BatchForm
 from . import services
 from .decorators import warehouse_manager_required, restaurant_manager_required
-from .models import SystemSettings, Item, Order, OrderItem, Payment, RestaurantManager
+from .models import SystemSettings, Item, Order
 from django.contrib import messages
-from .services import add_item_to_order
-from datetime import timedelta, date
-from django.utils import timezone
-from django.db import transaction
-from django.db.models import Sum
-from django.db.models.functions import TruncMonth
 
 ####################################################### ACCOUNTS #######################################################
 
@@ -154,6 +148,8 @@ def delete_food_item(request, item_id): #item_id as parameter from url
 
 #----------------------------------------------------------------------------------------------------------------------#
 
+@login_required
+@warehouse_manager_required
 def delete_batch(request, batch_id):
     if request.method == "POST":
         services.delete_batch_by_id(batch_id)
@@ -168,9 +164,9 @@ def update_price_list(request):
     if request.method == "POST":
         for item in items:
             new_price = request.POST.get(f"price_{item.item_id}") #get da val
-            if new_price:
+            if float(new_price) != 0.0:
                 services.update_item_price(item.item_id, new_price)
-        return redirect("view_food_items")
+                return redirect("view_food_items")
     return render(request, "warehouse_inventory/update_price_list.html", {"items": items})
 
 #----------------------------------------------------------------------------------------------------------------------#
@@ -228,12 +224,14 @@ def view_product_catalog(request):
 
 #----------------------------------------------------------------------------------------------------------------------#
 
+@login_required
+@restaurant_manager_required
 def add_to_cart(request, item_id):
     if request.method == "POST":
         quantity_requested = int(request.POST.get("quantity", 0))
         item = get_object_or_404(Item, pk=item_id)
-        order = services.get_current_order_for_user(request.user)  # implement this
-        success, msg = add_item_to_order(order, item, quantity_requested)
+        order = services.get_current_order_for_user(request.user)
+        success, msg = services.add_item_to_order(order, item, quantity_requested)
         if success:
             messages.success(request, msg)
         else:
@@ -243,35 +241,24 @@ def add_to_cart(request, item_id):
 #----------------------------------------------------------------------------------------------------------------------#
 
 @login_required
+@restaurant_manager_required
 def view_cart(request):
     manager = request.user.restaurantmanager
-    system_settings = SystemSettings.objects.first()
-    urgent_delivery_fee = system_settings.urgent_delivery_fee if system_settings else 0
-    order, created = Order.objects.get_or_create(restaurant_manager=manager, status='processing')
-    order_items = order.order_items.select_related('batch__item')
-    total_amount = sum(item.quantity * item.unit_price for item in order_items)
+    urgent_delivery_fee = services.get_urgent_delivery_fee()
+    order, created = services.get_or_create_processing_order(manager)
+    order_items = services.get_order_items(order)
+    total_amount = services.calculate_total_amount(order_items)
     return render(request, "warehouse_inventory/view_cart.html", {"order": order, "order_items": order_items, "total_amount": total_amount, "urgent_delivery_fee": urgent_delivery_fee})
 
 #----------------------------------------------------------------------------------------------------------------------#
 
 @login_required
+@restaurant_manager_required
 def place_order(request):
     manager = request.user.restaurantmanager
     order = get_object_or_404(Order, restaurant_manager=manager, status="processing")
-    total = 0
-    for item in order.order_items.all():
-        subtotal = item.quantity * item.unit_price
-        total += subtotal
-    if order.urgent_delivery:
-        total += services.get_urgent_delivery_fee()
-    payment, created = Payment.objects.get_or_create(
-    order=order,
-    defaults={'amount': total, 'due_date': timezone.now().date() + timedelta(days=7), 'payment_status': 'pending'})
-    if not created:
-        payment.amount = total
-        payment.due_date = timezone.now().date() + timedelta(days=7)
-        payment.payment_status = "pending"
-        payment.save()
+    total = services.calculate_order_total(order)
+    services.create_or_update_payment(order, total)
     order.status = "placed"
     order.save()
     return redirect('view_orders')
@@ -279,170 +266,123 @@ def place_order(request):
 #----------------------------------------------------------------------------------------------------------------------#
 
 @login_required
+@restaurant_manager_required
 def view_orders(request):
     manager = request.user.restaurantmanager
-    processing_orders = Order.objects.filter(restaurant_manager=manager, status="processing")
-    placed_orders = Order.objects.filter(restaurant_manager=manager, status="placed")
-    fulfilled_orders = Order.objects.filter(restaurant_manager=manager, status="fulfilled")
-    rejected_orders = Order.objects.filter(status='rejected')
-    canceled_orders = Order.objects.filter(status='canceled')
-    return render(request, "warehouse_inventory/view_orders.html", {"processing_orders": processing_orders, "placed_orders": placed_orders, "fulfilled_orders": fulfilled_orders, "rejected_orders": rejected_orders, "canceled_orders": canceled_orders})
-
-#----------------------------------------------------------------------------------------------------------------------#
-
-def warehouse_orders(request):
-    orders = Order.objects.filter(status='placed').prefetch_related('order_items__batch__item')
-    return render(request, 'warehouse_inventory/warehouse_orders.html', {'orders': orders})
-
-#----------------------------------------------------------------------------------------------------------------------#
-
-def fulfill_order(request, order_id):
-    order = get_object_or_404(Order, order_id=order_id)
-    order.status = 'fulfilled'
-    order.save()
-    return redirect('warehouse_orders')
-
-#----------------------------------------------------------------------------------------------------------------------#
-
-def reject_order(request, order_id):
-    order = get_object_or_404(Order, order_id=order_id)
-    if request.method == "POST":
-        with transaction.atomic(): #ensures rollback on error
-            order.status = 'rejected'
-            order.save()
-
-            for item in order.order_items.all():
-                batch = item.batch
-                batch.quantity += item.quantity
-                batch.save()
-        return redirect('warehouse_orders')
-
-#----------------------------------------------------------------------------------------------------------------------#
-
-def cancel_order(request, order_id):
-    order = get_object_or_404(Order, order_id=order_id)
-    if order.status == 'placed':
-        order.status = 'canceled'
-        order.save()
-        for order_item in order.order_items.all(): #roll back items
-            batch = order_item.batch
-            batch.quantity += order_item.quantity
-            batch.save()
-        return redirect('view_orders')
-    else:
-        return redirect('view_orders')
+    orders = services.get_orders_for_manager(manager)
+    return render(request, "warehouse_inventory/view_orders.html", orders)
 
 #----------------------------------------------------------------------------------------------------------------------#
 
 @login_required
+@warehouse_manager_required
+def warehouse_orders(request):
+    orders = services.get_placed_orders_for_warehouse()
+    return render(request, 'warehouse_inventory/warehouse_orders.html', {'orders': orders})
+
+#----------------------------------------------------------------------------------------------------------------------#
+
+@login_required
+@warehouse_manager_required
+def fulfill_order(request, order_id):
+    services.fulfill_order_by_id(order_id)
+    return redirect('warehouse_orders')
+
+#----------------------------------------------------------------------------------------------------------------------#
+
+@login_required
+@warehouse_manager_required
+def reject_order(request, order_id):
+    if request.method == "POST":
+        services.reject_order_and_restore_stock(order_id)
+    return redirect('warehouse_orders')
+
+#----------------------------------------------------------------------------------------------------------------------#
+
+@login_required
+@restaurant_manager_required
+def cancel_order(request, order_id):
+    services.cancel_order_and_restore_stock(order_id)
+    return redirect('view_orders')
+
+#----------------------------------------------------------------------------------------------------------------------#
+
+@login_required
+@restaurant_manager_required
 def restaurant_manager_billing(request):
     manager = request.user.restaurantmanager
-    pending_payments = Payment.objects.filter(order__restaurant_manager=manager, payment_status='pending', order__status='fulfilled')
-    total_due = sum([payment.amount for payment in pending_payments])
-    if request.method == 'POST': #pay whole bill: mark all as paid
-        for payment in pending_payments:
-            payment.payment_status = 'paid'
-            payment.save()
-        return redirect('restaurant_manager_billing')
-    return render(request, 'warehouse_inventory/restaurant_manager_billing.html', {'pending_payments': pending_payments,'total_due': total_due,})
+    pending_payments = []
+    total_due = 0
+    if request.method == 'POST':
+        pending_payments, total_due = services.mark_payments_as_paid(manager)
+    return render(request, 'warehouse_inventory/restaurant_manager_billing.html', {'pending_payments': pending_payments, 'total_due': total_due})
 
 #----------------------------------------------------------------------------------------------------------------------#
 
 @login_required
 @warehouse_manager_required
 def view_payments(request):
-    payments = Payment.objects.select_related("order__restaurant_manager").all()
+    payments = services.get_all_payments()
     return render(request, "warehouse_inventory/view_payments.html", {"payments": payments})
 
 #----------------------------------------------------------------------------------------------------------------------#
 
+@login_required
+@warehouse_manager_required
 def warehouse_monthly_earnings(request):
-    payments = Payment.objects.filter(payment_status='paid', order__status='fulfilled')
-    current_year = date.today().year
-    payments = payments.filter(order__date__year=current_year) #limit to current year
-    monthly_earnings = (payments.annotate(month=TruncMonth('order__date')).values('month').annotate(total=Sum('amount')).order_by('month')) #group by month and sum
+    monthly_earnings = services.get_monthly_earnings_for_current_year()
     return render(request, 'warehouse_inventory/monthly_earnings.html', {'monthly_earnings': monthly_earnings})
 
 #----------------------------------------------------------------------------------------------------------------------#
 
 @login_required
+@warehouse_manager_required
 def overall_report(request):
-    most_ordered = (OrderItem.objects.values('batch__item__item_name').annotate(total_quantity=Sum('quantity')).order_by('-total_quantity').first()) #get most ordered item (by quantity)
-    total_items = OrderItem.objects.aggregate(total=Sum('quantity'))['total'] or 0
-    from .models import Payment #total revenue from paid payments
-    total_revenue = Payment.objects.filter(payment_status='paid').aggregate(total=Sum('amount'))['total'] or 0
+    most_ordered = services.get_most_ordered_item()
+    total_items = services.get_total_items()
+    total_revenue = services.get_total_revenue()
     return render(request, 'warehouse_inventory/overall_report.html', {'most_ordered': most_ordered, 'total_items': total_items, 'total_revenue': total_revenue,})
 
 #----------------------------------------------------------------------------------------------------------------------#
 
 @login_required
+@warehouse_manager_required
 def approved_restaurant_managers(request):
-    approved_managers = RestaurantManager.objects.filter(status='approved')
+    approved_managers = services.get_approved_restaurant_managers()
     return render(request, 'warehouse_inventory/approved_restaurant_managers.html', {'approved_managers': approved_managers})
 
+#----------------------------------------------------------------------------------------------------------------------#
 
-
-
-
-
-
-from django.shortcuts import render, redirect
-from .models import RestaurantManager, Message, WarehouseManager
-from django.contrib.auth.decorators import login_required
-
-
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import RestaurantManager, Message, WarehouseManager
-from django.contrib.auth.decorators import login_required
-
-from django.shortcuts import get_object_or_404
-
-# @login_required
-# def send_notification(request, restaurant_manager_id):
-#     restaurant_manager = RestaurantManager.objects.get(pk=restaurant_manager_id)
-#     warehouse_manager = WarehouseManager.get_instance()  # Assumes there's only one warehouse manager
-    
-#     if request.method == 'POST':
-#         content = request.POST['content']
-#         # Create the message
-#         Message.objects.create(
-#             sender=warehouse_manager,
-#             receiver=restaurant_manager,
-#             content=content,
-#         )
-#         return redirect('approved_restaurant_managers')  # Redirect to approved managers list
-    
-#     return render(request, 'send_notification.html', {'restaurant_manager': restaurant_manager})
 @login_required
+@warehouse_manager_required
 def send_notification(request, restaurant_manager_id):
-    restaurant_manager = RestaurantManager.objects.get(pk=restaurant_manager_id)
-    warehouse_manager = WarehouseManager.get_instance() 
+    restaurant_manager = services.get_restaurant_manager_by_id(restaurant_manager_id)
+    warehouse_manager = services.get_warehouse_manager_instance()
     
     if request.method == 'POST':
-        content = request.POST.get('message_content') 
-        if content: 
-            #message
-            Message.objects.create(sender=warehouse_manager, receiver=restaurant_manager, content=content,)
-            return redirect('approved_restaurant_managers')  # Redirect to approved managers list
+        content = request.POST.get('message_content')
+        if content:
+            services.create_message(warehouse_manager, restaurant_manager, content)
+            return redirect('approved_restaurant_managers')
         else:
             messages.error(request, "Message content cannot be empty.")
-    
     return render(request, 'warehouse_inventory/send_notification.html', {'restaurant_manager': restaurant_manager})
 
+#----------------------------------------------------------------------------------------------------------------------#
 
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
-from .models import Message
 @login_required
+@restaurant_manager_required
 def restaurant_manager_notifications(request):
-    try:
-        # Get the RestaurantManager associated with the logged-in user
-        restaurant_manager = RestaurantManager.objects.get(user=request.user)
+    restaurant_manager = services.get_restaurant_manager_by_user(request.user)
+    notifications = services.get_notifications_for_manager(restaurant_manager)
+    return render(request, 'warehouse_inventory/restaurant_manager_notifications.html', {'notifications': notifications})
 
-        # Get all messages for this restaurant manager
-        notifications = Message.objects.filter(receiver=restaurant_manager)
+#----------------------------------------------------------------------------------------------------------------------#
 
-        return render(request, 'warehouse_inventory/restaurant_manager_notifications.html', {'notifications': notifications})
-    except RestaurantManager.DoesNotExist:
-        # Handle the case where the user is not a restaurant manager (or other error)
-        return redirect('error_page')  # Redirect to an error page if needed
+@login_required
+@warehouse_manager_required
+def warehouse_home(request):
+    low_stock_count = services.count_low_stock_items()
+    return render(request, 'warehouse_inventory/warehouse_home.html', {'low_stock_count': low_stock_count})
+
+#----------------------------------------------------------------------------------------------------------------------#

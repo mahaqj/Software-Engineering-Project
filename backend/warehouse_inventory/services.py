@@ -2,10 +2,12 @@
 from django.contrib.auth import get_user_model
 from django.utils.timezone import now
 from django.shortcuts import get_object_or_404
-from .models import RestaurantManager, Item, WarehouseManager
 from datetime import date, timedelta
 from django.db.models import Sum
-from .models import Batch, Order, OrderItem, SystemSettings
+from django.utils import timezone
+from django.db import transaction
+from django.db.models.functions import TruncMonth
+from .models import RestaurantManager, Item, WarehouseManager, Batch, Order, OrderItem, SystemSettings, Payment, Message
 
 ####################################################### ACCOUNTS #######################################################
 
@@ -103,8 +105,13 @@ def restock_item(item_id, quantity, expiry_date):
 def get_low_stock_items(margin=10):
     return Item.objects.annotate(total_stock=Sum("batches__quantity")).filter(total_stock__lt=margin)
 
+def count_low_stock_items(margin=10):
+    count = get_low_stock_items(margin).count()
+    print(f"Low stock count in services: {count}")
+    return count
+
 def get_low_stock_items_with_stock():
-    low_stock_items = get_low_stock_items()  # Already in services.py
+    low_stock_items = get_low_stock_items()
     return [{"item": item, "stock": get_current_stock(item.item_id)} for item in low_stock_items]
 
 def update_fees_in_system(settings, urgent_delivery_fee, late_payment_fee):
@@ -115,7 +122,7 @@ def update_fees_in_system(settings, urgent_delivery_fee, late_payment_fee):
 def get_current_order_for_user(user):
     return Order.objects.filter(restaurant_manager=user.restaurantmanager, status='processing').first() or Order.objects.create(restaurant_manager=user.restaurantmanager, status='processing')
 
-def add_item_to_order(order, item, quantity_requested):
+def add_item_to_order(order, item, quantity_requested): #the most insane function
     remaining_quantity = quantity_requested
     used_batches = []
     batches = item.batches.filter(quantity__gt=0).order_by('expiry_date')
@@ -146,3 +153,107 @@ def calculate_total_amount(orders):
 def get_urgent_delivery_fee():
     settings = SystemSettings.objects.first()
     return float(settings.urgent_delivery_fee) if settings else 0
+
+def calculate_order_total(order):
+    total = sum(item.quantity * item.unit_price for item in order.order_items.all())
+    if order.urgent_delivery:
+        total += get_urgent_delivery_fee()
+    return total
+
+def create_or_update_payment(order, total):
+    payment, created = Payment.objects.get_or_create(
+        order=order,
+        defaults={'amount': total, 'due_date': timezone.now().date() + timedelta(days=7), 'payment_status': 'pending'})
+    if not created:
+        payment.amount = total
+        payment.due_date = timezone.now().date() + timedelta(days=7)
+        payment.payment_status = "pending"
+        payment.save()
+
+def get_orders_for_manager(manager):
+    return {"processing_orders": Order.objects.filter(restaurant_manager=manager, status="processing"), "placed_orders": Order.objects.filter(restaurant_manager=manager, status="placed"), "fulfilled_orders": Order.objects.filter(restaurant_manager=manager, status="fulfilled"), "rejected_orders": Order.objects.filter(status="rejected"), "canceled_orders": Order.objects.filter(status="canceled")}
+
+def get_placed_orders_for_warehouse():
+    return Order.objects.filter(status='placed').prefetch_related('order_items__batch__item')
+
+def get_or_create_processing_order(manager):
+    return Order.objects.get_or_create(restaurant_manager=manager, status='processing')
+
+def get_order_items(order):
+    return order.order_items.select_related('batch__item')
+
+def calculate_total_amount(order_items):
+    return sum(item.quantity * item.unit_price for item in order_items)
+
+def fulfill_order_by_id(order_id):
+    order = get_object_or_404(Order, order_id=order_id)
+    order.status = 'fulfilled'
+    order.save()
+    return order
+
+def reject_order_and_restore_stock(order_id):
+    order = get_object_or_404(Order, order_id=order_id)
+    with transaction.atomic():
+        order.status = 'rejected'
+        order.save()
+        for item in order.order_items.select_related('batch').all():
+            batch = item.batch
+            batch.quantity += item.quantity
+            batch.save()
+    return order
+
+def cancel_order_and_restore_stock(order_id):
+    order = get_object_or_404(Order, order_id=order_id)
+    if order.status == 'placed':
+        order.status = 'canceled'
+        order.save()
+        for item in order.order_items.all():
+            batch = item.batch
+            batch.quantity += item.quantity
+            batch.save()
+    return order
+
+def mark_payments_as_paid(manager):
+    pending_payments = Payment.objects.filter(order__restaurant_manager=manager, payment_status='pending', order__status='fulfilled')
+    total_due = sum([payment.amount for payment in pending_payments])
+    for payment in pending_payments:
+        payment.payment_status = 'paid'
+        payment.save()
+    return pending_payments, total_due
+
+def get_all_payments():
+    return Payment.objects.select_related("order__restaurant_manager").all()
+
+def get_monthly_earnings_for_current_year():
+    current_year = date.today().year
+    payments = Payment.objects.filter(payment_status='paid', order__status='fulfilled')
+    payments = payments.filter(order__date__year=current_year) #limited to current year
+    monthly_earnings = (payments.annotate(month=TruncMonth('order__date')).values('month').annotate(total=Sum('amount')).order_by('month')) #group by month and sum
+    return monthly_earnings
+
+def get_most_ordered_item():
+    return (OrderItem.objects.values('batch__item__item_name').annotate(total_quantity=Sum('quantity')).order_by('-total_quantity').first()) #get the most ordered item (by quantity)
+
+def get_total_items():
+    return OrderItem.objects.aggregate(total=Sum('quantity'))['total'] or 0
+
+def get_total_revenue():
+    return Payment.objects.filter(payment_status='paid').aggregate(total=Sum('amount'))['total'] or 0
+
+def get_approved_restaurant_managers():
+    return RestaurantManager.objects.filter(status='approved')
+
+def get_restaurant_manager_by_id(restaurant_manager_id):
+    return RestaurantManager.objects.get(pk=restaurant_manager_id)
+
+def get_warehouse_manager_instance():
+    return WarehouseManager.get_instance()
+
+def create_message(sender, receiver, content):
+    return Message.objects.create(sender=sender, receiver=receiver, content=content)
+
+def get_restaurant_manager_by_user(user):
+    return RestaurantManager.objects.get(user=user)
+
+def get_notifications_for_manager(manager):
+    return Message.objects.filter(receiver=manager)

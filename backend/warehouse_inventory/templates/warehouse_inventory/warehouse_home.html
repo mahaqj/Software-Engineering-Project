@@ -251,9 +251,12 @@
         <div class="greeting">
             <h2>Welcome, {{ request.user.manager_name }}!</h2>
         </div>
-        <div class="notif">
+        {% comment %} <div class="low-stock-info">
+            <h3>{{ low_stock_count }} items are low in stock right now.</h3>
+        </div> {% endcomment %}
+        {% comment %} <div class="notif">
             <h3>Hi, low stock</h3>
-        </div>
+        </div> {% endcomment %}
         <div class="flex-container">
             <div class="idea-card">
                 <div class="heading">
