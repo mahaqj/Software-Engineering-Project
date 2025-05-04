@@ -12,11 +12,11 @@
     rel="stylesheet"
   >
   <link
-    rel="stylesheet"
-    media="screen"
-    href="https://fontlibrary.org//face/minecraftia"
-    type="text/css"
-  />
+  rel="stylesheet"
+  media="screen"
+  href="https://fontlibrary.org//face/minecraftia"
+  type="text/css"
+/>
 
   <style>
     body {
@@ -31,7 +31,7 @@
 
      
       /* Custom background */
-      background: url("{% static 'images/mcwall/warehouse_home_1.png' %}") no-repeat center center fixed;
+      background: url("{% static 'images/mcwall/earning.png' %}") no-repeat center center fixed;
 
       background-size: cover;
       /* Custom cursor */
@@ -137,12 +137,13 @@
 
     .link-section{
         background-color:rgb(238, 144, 37);
-        height: 40px;
+        height: 30px;
         text-align: center;
         margin: 0.5em;
         padding:0.25em;
         align-items: center;
         color: #fff;
+        padding-top: 0.8em;
     }
 
     .link-section:hover{
@@ -180,14 +181,11 @@
     <meta charset="UTF-8">
     <title>Monthly Earnings</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            padding: 2em;
-        }
+        
 
         h1 {
             color: #333;
+            color: white;
         }
 
         ul {
@@ -202,6 +200,7 @@
             margin: 0.5em 0;
             font-size: 1.1em;
             color: #222;
+            color: green;
         }
     </style>
 </head>
@@ -210,6 +209,11 @@
         <div class="top-part">
             <img src="{% static 'images/mcwall/Alex.png' %}" alt="Avatar" class="avatar">
         </div>
+        <a href="{% url 'warehouse_home' %}">
+            <div class="link-section">
+                Home
+            </div>
+        </a>
         <a href="{% url 'restaurant_manager_requests' %}">
             <div class="link-section">
                 View Requests
@@ -240,11 +244,7 @@
                 Restock Items
             </div>
         </a>
-        <a href="{% url 'update_fees' %}"> 
-            <div class="link-section">
-                Special Charges
-            </div>
-        </a>
+        
         <a href="{% url 'warehouse_orders' %}"> 
             <div class="link-section">
                 View Orders

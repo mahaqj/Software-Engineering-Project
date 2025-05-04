@@ -23,15 +23,14 @@
       margin: 0;
       padding: 0;
       font-family: 'MinecraftiaRegular', sans-serif; /* Updated font */
-      background: url("{% static 'images/mcwall/warehouse_home_1.png' %}") no-repeat center center fixed;
+      background: url("{% static 'images/mcwall/approved3.png' %}") no-repeat center center fixed;
       background-size: cover;
       cursor: url("{% static 'images/cursor.png' %}") 16 16, auto;
       color: #ffffff;
       font-size: small;
 
      
-      /* Custom background */
-      background: url("{% static 'images/mcwall/warehouse_home_1.png' %}") no-repeat center center fixed;
+     
 
       background-size: cover;
       /* Custom cursor */
@@ -137,12 +136,13 @@
 
     .link-section{
         background-color:rgb(238, 144, 37);
-        height: 40px;
+        height: 30px;
         text-align: center;
         margin: 0.5em;
         padding:0.25em;
         align-items: center;
         color: #fff;
+        padding-top: 0.8em;
     }
 
     .link-section:hover{
@@ -174,7 +174,7 @@
 table{
         text-align: center;
         border-spacing: 3px;
-        width: 80%;
+        width: 90%;
     }
     tr{
         text-align: center;
@@ -191,6 +191,140 @@ table{
         background: #33891d;
     }
 
+    /* Starting from here */
+    .back-container{
+    
+    background-color: #8a8b8b;
+    background-color: #dbdbda;
+    width: 95%;
+    margin: auto;
+    margin-top: 12em;
+    border-color: black;
+    border-width: 10px;
+    border: 0.1em solid #1a0606;
+    border-radius: 2px;
+    box-shadow:2px 2px 4px rgba(0, 0, 0, 0.6),
+    inset -1px -1px 1px rgba(255, 255, 255, 0.6),
+    inset 1px 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+table{
+    width: 100%;
+}
+
+th{
+    background-color: #8a8b8b;
+    height: 1.9em;
+    color: #2a2b2b;
+    box-shadow:
+    inset -1px -1px 1px rgba(255, 255, 255, 0.6),
+    inset 1px 1px 1px rgba(0, 0, 0, 0.2);
+    padding: 1px;
+}
+
+tr{
+    background-color: #8a8b8b;
+    color: #2a2b2b;
+    padding: 2px;
+}
+
+td{
+    padding: 2px;
+}
+
+.greeting2{
+    background-color: #8a8b8b;
+    margin: 0.5em;
+    height: 1.9em;
+    color: #2a2b2b;
+    box-shadow:
+    inset -1px -1px 1px rgba(255, 255, 255, 0.6),
+    inset 1px 1px 1px rgba(0, 0, 0, 0.6);
+    padding: 0.4em;
+    padding-left: 1em;
+    padding-top: 0.6em;
+}
+
+.greeting2{
+    background-color: #dbdbda;
+    margin: 0.5em;
+    height: 1.9em;
+    color: #2a2b2b;
+    /*box-shadow: none; */
+    padding: 0.4em;
+    padding-left: 1em;
+    padding-top: 0.6em;
+    font-size: 1.3em;
+}
+
+.stats-container{
+    display: flex;
+    
+}
+
+.stats-text{
+    background-color: #8a8b8b;
+}
+
+.stats{
+    background-color: #8a8b8b;
+}
+
+/* 1. Space between the cells, and a margin around the table */
+.stats-table {
+  width: 98%;
+  border-collapse: separate;     /* allow spacing */
+  border-spacing: 0.3em 0.3em;    /* horizontal gap 0.5em, vertical gap 0.3em */
+  margin: 0.5em;                  /* same outer margin as .greeting2 */
+}
+
+/* 2. Style each cell to match .greeting2 */
+.stats-table td {
+  background-color: #8a8b8b;      /* same fill */
+  color: #2a2b2b;                 /* same text color */
+  padding: 0.5em 1em;             /* same top/bottom & left/right padding */
+  box-shadow:
+    inset -1px -1px 1px rgba(255,255,255,0.8),
+    inset 1px 1px 1px rgba(0,0,0,0.6);
+  border-radius: 2px;             /* optional: match your div’s slight rounding */
+}
+
+.stats-table td:hover{
+    cursor:default;
+}
+
+.stats-table th:hover{
+    cursor:default;
+}
+
+.stats-table .td2:hover{
+    background-color: green;
+    color: white;
+}
+
+
+.stats-table th{
+    padding: 0.5em 1em;
+}
+
+/* 3. If you want the label and value cells sized differently: */
+
+.submit-btn{
+    width: 100%;
+    height: 100%;
+    border: none;
+    background-color: inherit;
+    font-family: inherit;
+    color: #2a2b2b;
+}
+
+.submit-btn:hover{
+    cursor: pointer;
+    background-color: green;
+    color: white;
+}
+
+
 </style>
 </head>
 <body>
@@ -199,6 +333,11 @@ table{
         <div class="top-part">
             <img src="{% static 'images/mcwall/Alex.png' %}" alt="Avatar" class="avatar">
         </div>
+        <a href="{% url 'warehouse_home' %}">
+            <div class="link-section">
+                Home
+            </div>
+        </a>
         <a href="{% url 'restaurant_manager_requests' %}">
             <div class="link-section">
                 View Requests
@@ -227,11 +366,6 @@ table{
         <a href="{% url 'restock_items' %}">
             <div class="link-section">
                 Restock Items
-            </div>
-        </a>
-        <a href="{% url 'update_fees' %}"> 
-            <div class="link-section">
-                Special Charges
             </div>
         </a>
         <a href="{% url 'warehouse_orders' %}"> 
@@ -267,48 +401,57 @@ table{
     </div>
     
     <div class="main-content">
-        <div class="greeting">
-            <h2>Approved Restaurant Managers</h2>
+        
+        <div class="back-container">
+            <div class="greeting2">
+                Approved Restaurant Managers
+            </div>
+            <table class="stats-table">
+                <thead>
+                    <tr>
+                        <th>Manager Name</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Contact No</th>
+                        <th>Location</th>
+                        <th>Restaurant Name</th>
+                        <th>Bank Account No</th>
+                        <th>Notify</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for rm in approved_managers %}
+                    <tr class="stats-row">
+                        <td class="stats-label">{{ rm.user.manager_name }}</td>
+                        <td class="stats-label">{{ rm.user.username }}</td>
+                        <td class="stats-label">{{ rm.user.email }}</td>
+                        <td class="stats-label">{{ rm.user.contact_no }}</td>
+                        <td class="stats-label">{{ rm.user.location }}</td>
+                        <td class="stats-label">{{ rm.restaurant_name }}</td>
+                        <td class="stats-label">{{ rm.bank_acc_no }}</td>
+                        <td class="td2">
+                            <form action="{% url 'send_notification' rm.user_id %}" method="post">
+                                {% csrf_token %}
+                                <button class="submit-btn" type="submit">Notify Manager</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8">No approved restaurant managers found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                
+                
+            </tbody>
+              </table>
         </div>
+        
+        
+    </div>
 
 
-<table>
-    <thead>
-        <tr>
-            <th>Manager Name</th>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Contact No</th>
-            <th>Location</th>
-            <th>Restaurant Name</th>
-            <th>Bank Account No</th>
-            <th>Notify</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for rm in approved_managers %}
-        <tr>
-            <td>{{ rm.user.manager_name }}</td>
-            <td>{{ rm.user.username }}</td>
-            <td>{{ rm.user.email }}</td>
-            <td>{{ rm.user.contact_no }}</td>
-            <td>{{ rm.user.location }}</td>
-            <td>{{ rm.restaurant_name }}</td>
-            <td>{{ rm.bank_acc_no }}</td>
-            <td>
-                <form action="{% url 'send_notification' rm.user_id %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit">Notify Manager</button>
-                </form>
-            </td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="8">No approved restaurant managers found.</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
 </div>
 </body>
 </html>

@@ -8,10 +8,6 @@
     <title>Home - SupplyCraft</title>
   
   <link
-    href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Tektur:wght@400..900&display=swap"
-    rel="stylesheet"
-  >
-  <link
     rel="stylesheet"
     media="screen"
     href="https://fontlibrary.org//face/minecraftia"
@@ -22,21 +18,13 @@
     body {
       margin: 0;
       padding: 0;
-      font-family: 'MinecraftiaRegular', sans-serif; /* Updated font */
+      font-family: 'MinecraftiaRegular', sans-serif; 
       background: url("{% static 'images/mcwall/warehouse_home_1.png' %}") no-repeat center center fixed;
       background-size: cover;
       cursor: url("{% static 'images/cursor.png' %}") 16 16, auto;
       color: #ffffff;
       font-size: small;
-
-     
-      /* Custom background */
-      background: url("{% static 'images/mcwall/warehouse_home_1.png' %}") no-repeat center center fixed;
-
-      background-size: cover;
-      /* Custom cursor */
-      cursor: url("{% static 'images/cursor.png' %}") 16 16, auto;
-        
+      background-size: cover;        
     }
 
     .aside{
@@ -48,72 +36,10 @@
         background-color: white;
         background:rgb(238, 110, 37);
         overflow-y: auto;
-        /* Hide scrollbar for IE, Edge */
         -ms-overflow-style: none;
-
-        /* Hide scrollbar for Firefox */
         scrollbar-width: none;
     }
     
-
-    .aside::-webkit-scrollbar 
-    {
-    display: none;
-    }
-
-    .main-content{
-        width: 80%;
-        position: fixed;
-        left: 260px;
-        top: 0;
-        height: 100%;
-    }
-
-    .greeting{
-        padding-top: 1em;
-        padding-left: 1em;
-    }
-
-    .flex-container{
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: space-evenly;
-        height: 80%;
-    }
-
-    .idea-card{
-        width: 300px;
-        height: 200px;
-        background-color: rgba(0, 0, 0, 0.6);
-        margin: 0.5em;
-        align-items: center;
-        text-align: center;
-    }
-
-    .idea-card:hover{
-        box-shadow: 0 0 20px rgba(0,0,0,0.7);
-        transition: 0.3s ease;
-    }
-
-    .heading{
-        padding-top:0.5em;
-        
-    }
-    .image{
-        width: 50%;
-        height: 50%;
-        background-color: white;
-        margin: auto;
-        margin-top: 1.5em;
-        border-radius: 50%;
-        
-    }
-
-    .image:hover{
-        transform: scale(1.1);
-        transition: .3s ease;
-    }
     .responsive{
         width: 100%;
         height: 100%;
@@ -137,12 +63,13 @@
 
     .link-section{
         background-color:rgb(238, 144, 37);
-        height: 40px;
+        height: 30px;
         text-align: center;
         margin: 0.5em;
         padding:0.25em;
         align-items: center;
         color: #fff;
+        padding-top: 0.8em;
     }
 
     .link-section:hover{
@@ -154,9 +81,9 @@
         text-decoration: none;
         color: #fff;
     }
-
-    .notif{
-       display: none;
+    .aside::-webkit-scrollbar 
+    {
+        display: none;
     }
 
     .scroller{
@@ -172,6 +99,190 @@
     }
 }
 
+
+    .main-content
+    {
+        width: 80%;
+        position: fixed;
+        left: 260px;
+        top: 0;
+        height: 100%;
+        align-items: center;
+    }
+
+    .greeting
+    {
+        padding-top: 1em;
+        padding-left: 1em;
+    }
+
+    .flex-container
+    {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+        height: 80%;
+    }
+
+    .idea-card
+    {
+        width: 300px;
+        height: 200px;
+        background-color: rgba(182, 173, 173, 0.6);
+        margin: 0.5em;
+        align-items: center;
+        text-align: center;
+    }
+
+    .idea-card:hover
+    {
+        box-shadow: 0 0 20px rgba(224, 224, 224, 0.7);
+        transition: 0.3s ease;
+    }
+
+    .heading{
+        padding-top:0.5em;
+        
+    }
+    .image{
+        width: 50%;
+        height: 50%;
+        background-color: white;
+        margin: auto;
+        margin-top: 1.5em;
+        border-radius: 50%;
+        
+    }
+
+    .image:hover{
+        transform: scale(1.1);
+        transition: .3s ease;
+    }
+
+
+
+.restock-meter {
+  width: 80%;
+  height: 1.5em;
+}
+.meter-label {
+  text-align: center;
+  font-size: 0.9em;
+  margin-top: 0.2em;
+}
+
+.back-container{
+    
+    background-color: #8a8b8b;
+    background-color: #dbdbda;
+    height: 35%;
+    width: 75%;
+    margin: auto;
+    margin-top: 12em;
+    border-color: black;
+    border-width: 10px;
+    border: 0.1em solid #1a0606;
+    border-radius: 2px;
+    box-shadow:2px 2px 4px rgba(0, 0, 0, 0.6),
+    inset -1px -1px 1px rgba(255, 255, 255, 0.6),
+    inset 1px 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+table{
+    width: 100%;
+}
+
+th{
+    background-color: #8a8b8b;
+    height: 1.9em;
+    color: #2a2b2b;
+    box-shadow:
+    inset -1px -1px 1px rgba(255, 255, 255, 0.6),
+    inset 1px 1px 1px rgba(0, 0, 0, 0.2);
+    padding: 1px;
+}
+
+tr{
+    background-color: #8a8b8b;
+    color: #2a2b2b;
+    padding: 2px;
+}
+
+td{
+    padding: 2px;
+}
+
+.greeting2{
+    background-color: #8a8b8b;
+    margin: 0.5em;
+    height: 1.9em;
+    color: #2a2b2b;
+    box-shadow:
+    inset -1px -1px 1px rgba(255, 255, 255, 0.6),
+    inset 1px 1px 1px rgba(0, 0, 0, 0.6);
+    padding: 0.4em;
+    padding-left: 1em;
+    padding-top: 0.6em;
+}
+
+.greeting2{
+    background-color: #dbdbda;
+    margin: 0.5em;
+    height: 1.9em;
+    color: #2a2b2b;
+    /*box-shadow: none; */
+    padding: 0.4em;
+    padding-left: 1em;
+    padding-top: 0.6em;
+    font-size: 1.3em;
+}
+
+.stats-container{
+    display: flex;
+    
+}
+
+.stats-text{
+    background-color: #8a8b8b;
+}
+
+.stats{
+    background-color: #8a8b8b;
+}
+
+/* 1. Space between the cells, and a margin around the table */
+.stats-table {
+  width: 98%;
+  border-collapse: separate;     /* allow spacing */
+  border-spacing: 0.3em 0.3em;    /* horizontal gap 0.5em, vertical gap 0.3em */
+  margin: 0.5em;                  /* same outer margin as .greeting2 */
+}
+
+/* 2. Style each cell to match .greeting2 */
+.stats-table td {
+  background-color: #8a8b8b;      /* same fill */
+  color: #2a2b2b;                 /* same text color */
+  padding: 0.5em 1em;             /* same top/bottom & left/right padding */
+  box-shadow:
+    inset -1px -1px 1px rgba(255,255,255,0.8),
+    inset 1px 1px 1px rgba(0,0,0,0.6);
+  border-radius: 2px;             /* optional: match your div’s slight rounding */
+}
+
+/* 3. If you want the label and value cells sized differently: */
+.stats-label {
+  /* e.g. make the first two columns narrower */
+  width: 80%;
+}
+
+.stats-value {
+  /* right-align the numbers */
+  text-align: right;
+}
+
+
+
 </style>
 </head>
 <body>
@@ -180,6 +291,11 @@
         <div class="top-part">
             <img src="{% static 'images/mcwall/Alex.png' %}" alt="Avatar" class="avatar">
         </div>
+        <a href="{% url 'warehouse_home' %}">
+            <div class="link-section">
+                Home
+            </div>
+        </a>
         <a href="{% url 'restaurant_manager_requests' %}">
             <div class="link-section">
                 View Requests
@@ -210,11 +326,7 @@
                 Restock Items
             </div>
         </a>
-        <a href="{% url 'update_fees' %}"> 
-            <div class="link-section">
-                Special Charges
-            </div>
-        </a>
+        
         <a href="{% url 'warehouse_orders' %}"> 
             <div class="link-section">
                 View Orders
@@ -248,85 +360,31 @@
     </div>
     
     <div class="main-content">
-        <div class="greeting">
-            <h2>Welcome, {{ request.user.manager_name }}!</h2>
-        </div>
-        {% comment %} <div class="low-stock-info">
-            <h3>{{ low_stock_count }} items are low in stock right now.</h3>
-        </div> {% endcomment %}
-        {% comment %} <div class="notif">
-            <h3>Hi, low stock</h3>
-        </div> {% endcomment %}
-        <div class="flex-container">
-            <div class="idea-card">
-                <div class="heading">
-                    Accept Restaurant Manager Requests
-                </div>
-                <div class="image">
-                    <a href="{% url 'restaurant_manager_requests' %}">
-                        <img src="{% static 'images/mcwall/name_tag.png' %}" alt="nametag" class="responsive">
-                    </a>
-                </div>
+        
+        <div class="back-container">
+            <div class="greeting2">
+                Welcome, {{ request.user.manager_name }}!
             </div>
-            <div class="idea-card">
-                <div class="heading">
-                    Add Food Item
-                </div>
-                <div class="image">
-                    <a href="{% url 'add_food_item' %}">
-                        <img src="{% static 'images/mcwall/name_tag.png' %}" alt="nametag" class="responsive">
-                    </a>
-                </div>
-                
-                
-            </div>
-            <div class="idea-card">
-                <div class="heading">
-                    View Food Items
-                </div>
-                <div class="image">
-                    <a href="{% url 'view_food_items' %}">
-                        <img src="{% static 'images/mcwall/name_tag.png' %}" alt="nametag" class="responsive">
-                    </a>
-                </div>
-                
-            </div>
-            <div class="idea-card">
-                <div class="heading">
-                   Track Expiry Dates
-                </div>
-                <div class="image">
-                    <a href="{% url 'expired_food_items' %}">
-                        <img src="{% static 'images/mcwall/name_tag.png' %}" alt="nametag" class="responsive">
-                    </a>
-                </div>
-                
-            </div>
-            <div class="idea-card">
-                <div class="heading">
-                    Update Price List
-                </div>
-                <div class="image">
-                    <a href="{% url 'update_price_list' %}">
-                        <img src="{% static 'images/mcwall/name_tag.png' %}" alt="nametag" class="responsive">
-                    </a>
-                </div>
-                   
-            </div>
-            <div class="idea-card">
-                <div class="heading">
-                    Restock Items
-                </div>
-                <div class="image">
-                    <a href="{% url 'restock_items' %}">
-                        <img src="{% static 'images/mcwall/name_tag.png' %}" alt="nametag" class="responsive">
-                    </a>
-                </div>
-                
-            </div>
+            <table class="stats-table">
+                <tr class="stats-row">
+                  <td class="stats-label" colspan="2">Low Stock Items:</td>
+                  <td class="stats-value">{{ low_stock_count }}</td>
+                </tr>
+                <tr class="stats-row">
+                  <td class="stats-label" colspan="2">Expired Stocks:</td>
+                  <td class="stats-value">{{ expired_count }}</td>
+                </tr>
+                <tr class="stats-row">
+                    <td class="stats-label" colspan="2">Soon to be Expiring:</td>
+                    <td class="stats-value">{{ expiring_soon_count }}</td>
+                </tr>
+                <tr class="stats-row">
+                    <td class="stats-label" colspan="2">Total Revenue:</td>
+                    <td class="stats-value">{{ total_revenue }}</td>
+                </tr>
+              </table>
         </div>
         
-       
         
     </div>
 </body>

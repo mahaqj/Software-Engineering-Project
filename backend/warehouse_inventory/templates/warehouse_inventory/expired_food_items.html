@@ -8,16 +8,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Track Expiry - SupplyCraft</title>
     <link
-    href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Tektur:wght@400..900&display=swap"
-    rel="stylesheet">
+    rel="stylesheet"
+    media="screen"
+    href="https://fontlibrary.org//face/minecraftia"
+    type="text/css"
+  />
+</head>
 <style>
     body {
-      margin: 0;
+        margin: 0;
       padding: 0;
+      font-family: 'MinecraftiaRegular', sans-serif; 
       background-size: cover;
-      font-family: "Pixelify Sans", sans-serif;
       color: #ffffff;
-      background: url("{% static 'images/mcwall/expired.png' %}") no-repeat center center fixed;
+      font-size: small;
+      background-size: cover;
+      background: url("{% static 'images/mcwall/expired2.png' %}") no-repeat center center fixed;
       background-size: cover;
     }
     .aside{
@@ -68,12 +74,13 @@
 
     .link-section{
         background-color:rgb(238, 144, 37);
-        height: 40px;
+        height: 30px;
         text-align: center;
         margin: 0.5em;
         padding:0.25em;
         align-items: center;
         color: #fff;
+        padding-top: 0.8em;
     }
 
     .link-section:hover{
@@ -95,13 +102,16 @@
     }
     .not_greeting{
         padding-left: 0.8rem;
+        /*
         background-color: rgba(0, 0, 0, 0.6);
+        */
     }
+
     
     table{
         text-align: center;
         border-spacing: 3px;
-        width: 80%;
+        width: 90%;
     }
     tr{
         text-align: center;
@@ -124,6 +134,11 @@
         <div class="top-part">
             <img src="{% static 'images/mcwall/Alex.png' %}" alt="Avatar" class="avatar">
         </div>
+        <a href="{% url 'warehouse_home' %}">
+            <div class="link-section">
+                Home
+            </div>
+        </a>
         <a href="{% url 'restaurant_manager_requests' %}">
             <div class="link-section">
                 View Requests
@@ -154,11 +169,7 @@
                 Restock Items
             </div>
         </a>
-        <a href="{% url 'update_fees' %}"> 
-            <div class="link-section">
-                Special Charges
-            </div>
-        </a>
+        
         <a href="{% url 'warehouse_orders' %}"> 
             <div class="link-section">
                 View Orders
@@ -197,7 +208,7 @@
         </div>
         <div class ="not_greeting">
 
-    <h3>❌ Expired Items</h3>
+    <h3>Expired Items</h3>
     
     {% if expired_batches %}
         <table border="1">
@@ -227,7 +238,7 @@
         <p>No expired items.</p>
     {% endif %}
 
-    <h3>⚠️ Expiring Soon (Next 7 Days)</h3>
+    <h3>Expiring Soon (Next 7 Days)</h3>
     {% if expiring_soon_batches %}
         <table border="1">
             <tr>
@@ -258,7 +269,7 @@
     {% endif %}
 
     <br>
-    <a href="{% url 'warehouse_home' %}">Back to Home</a>
+   
     </div>
 </body>
 </html>

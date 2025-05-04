@@ -95,6 +95,12 @@ class Order(models.Model): #placed by restaurant manager
 
     def __str__(self):
         return f"Order {self.order_id} by {self.restaurant_manager.restaurant_name} - {self.status}"
+    
+    @property
+    def total_amount(self):
+        # pure-Python version:
+        return sum(item.quantity * item.unit_price
+                   for item in self.order_items.all())
 
 ######################################################################################################################################################
  

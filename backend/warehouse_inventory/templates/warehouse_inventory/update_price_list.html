@@ -8,16 +8,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Price List</title>
     <link
-    href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Tektur:wght@400..900&display=swap"
-    rel="stylesheet">
+    rel="stylesheet"
+    media="screen"
+    href="https://fontlibrary.org//face/minecraftia"
+    type="text/css"
+  />
+</head>
 <style>
     body {
-      margin: 0;
+        margin: 0;
       padding: 0;
-      background-size: cover;
-      font-family: "Pixelify Sans", sans-serif;
-      color: #ffffff;
+      font-family: 'MinecraftiaRegular', sans-serif; 
       background: url("{% static 'images/mcwall/price_list.png' %}") no-repeat center center fixed;
+      background-size: cover;
+      cursor: url("{% static 'images/cursor.png' %}") 16 16, auto;
+      color: #ffffff;
+      font-size: small;
       background-size: cover;
     }
     .aside{
@@ -67,12 +73,13 @@
 
     .link-section{
         background-color:rgb(238, 144, 37);
-        height: 40px;
+        height: 30px;
         text-align: center;
         margin: 0.5em;
         padding:0.25em;
         align-items: center;
         color: #fff;
+        padding-top: 0.8em;
     }
 
     .link-section:hover{
@@ -99,7 +106,8 @@
     table{
         text-align: center;
         border-spacing: 3px;
-        width: 80%;
+        width: 90%;
+        background-color: rgba(0, 0, 0, 0.6);
     }
     tr{
         text-align: center;
@@ -115,6 +123,22 @@
         background-color: gray;
         background: #33891d;
     }
+
+    .submit-btn{
+        border: none;
+        background-color: rgb(238, 110, 37);
+        background-color: black;
+        background-color:  #246314;
+        color: white;
+        padding: 0.5em 0.7em;
+        font-family: inherit;
+    }
+
+    .submit-btn:hover{
+        cursor: pointer;
+        background-color: black;
+        background-color: #33891d;
+    }
 </style>
 </head>
 <body>
@@ -122,6 +146,11 @@
         <div class="top-part">
             <img src="{% static 'images/mcwall/Alex.png' %}" alt="Avatar" class="avatar">
         </div>
+        <a href="{% url 'warehouse_home' %}">
+            <div class="link-section">
+                Home
+            </div>
+        </a>
         <a href="{% url 'restaurant_manager_requests' %}">
             <div class="link-section">
                 View Requests
@@ -152,11 +181,7 @@
                 Restock Items
             </div>
         </a>
-        <a href="{% url 'update_fees' %}"> 
-            <div class="link-section">
-                Special Charges
-            </div>
-        </a>
+        
         <a href="{% url 'warehouse_orders' %}"> 
             <div class="link-section">
                 View Orders
@@ -220,7 +245,7 @@
                 {% endfor %}
             </table>
             <br>
-            <button type="submit">Update Prices</button>
+            <button class="submit-btn" type="submit">Update Prices</button>
         </form>
   
     <br>
@@ -230,8 +255,5 @@
 
 
 
-    
-    <br>
-    <a href="{% url 'warehouse_home' %}">Back to Home</a>
 </body>
 </html>

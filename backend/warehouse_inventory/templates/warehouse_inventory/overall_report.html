@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Warehouse Manager Home</title>
+    <title>Report</title>
     <title>Home - SupplyCraft</title>
   
   <link
@@ -27,11 +27,11 @@
       background-size: cover;
       cursor: url("{% static 'images/cursor.png' %}") 16 16, auto;
       color: #ffffff;
-    font-size: small;
+      font-size: small;
 
      
       /* Custom background */
-      background: url("{% static 'images/mcwall/warehouse_home_1.png' %}") no-repeat center center fixed;
+      background: url("{% static 'images/mcwall/Fees2.png' %}") no-repeat center center fixed;
 
       background-size: cover;
       /* Custom cursor */
@@ -67,6 +67,7 @@
         left: 260px;
         top: 0;
         height: 100%;
+        align-items: center;
     }
 
     .greeting{
@@ -85,14 +86,14 @@
     .idea-card{
         width: 300px;
         height: 200px;
-        background-color: rgba(0, 0, 0, 0.6);
+        background-color: rgba(182, 173, 173, 0.6);
         margin: 0.5em;
         align-items: center;
         text-align: center;
     }
 
     .idea-card:hover{
-        box-shadow: 0 0 20px rgba(0,0,0,0.7);
+        box-shadow: 0 0 20px rgba(224, 224, 224, 0.7);
         transition: 0.3s ease;
     }
 
@@ -137,12 +138,13 @@
 
     .link-section{
         background-color:rgb(238, 144, 37);
-        height: 40px;
+        height: 30px;
         text-align: center;
         margin: 0.5em;
         padding:0.25em;
         align-items: center;
         color: #fff;
+        padding-top: 0.8em;
     }
 
     .link-section:hover{
@@ -172,6 +174,125 @@
     }
 }
 
+.restock-meter {
+  width: 80%;
+  height: 1.5em;
+}
+.meter-label {
+  text-align: center;
+  font-size: 0.9em;
+  margin-top: 0.2em;
+}
+
+.back-container{
+    
+    background-color: #8a8b8b;
+    background-color: #dbdbda;
+    height: 33%;
+    width: 75%;
+    margin: auto;
+    margin-top: 12em;
+    border-color: black;
+    border-width: 10px;
+    border: 0.1em solid #1a0606;
+    border-radius: 2px;
+    box-shadow:2px 2px 4px rgba(0, 0, 0, 0.6),
+    inset -1px -1px 1px rgba(255, 255, 255, 0.6),
+    inset 1px 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+table{
+    width: 100%;
+}
+
+th{
+    background-color: #8a8b8b;
+    height: 1.9em;
+    color: #2a2b2b;
+    box-shadow:
+    inset -1px -1px 1px rgba(255, 255, 255, 0.6),
+    inset 1px 1px 1px rgba(0, 0, 0, 0.2);
+    padding: 1px;
+}
+
+tr{
+    background-color: #8a8b8b;
+    color: #2a2b2b;
+    padding: 2px;
+}
+
+td{
+    padding: 2px;
+}
+
+.greeting2{
+    background-color: #8a8b8b;
+    margin: 0.5em;
+    height: 1.9em;
+    color: #2a2b2b;
+    box-shadow:
+    inset -1px -1px 1px rgba(255, 255, 255, 0.6),
+    inset 1px 1px 1px rgba(0, 0, 0, 0.6);
+    padding: 0.4em;
+    padding-left: 1em;
+    padding-top: 0.6em;
+}
+
+.greeting2{
+    background-color: #dbdbda;
+    margin: 0.5em;
+    height: 1.8em;
+    color: #2a2b2b;
+    /*box-shadow: none; */
+    padding: 0.4em;
+    padding-left: 1em;
+    padding-top: 0.6em;
+    font-size: 1.3em;
+}
+
+.stats-container{
+    display: flex;
+    
+}
+
+.stats-text{
+    background-color: #8a8b8b;
+}
+
+.stats{
+    background-color: #8a8b8b;
+}
+
+/* 1. Space between the cells, and a margin around the table */
+.stats-table {
+  width: 98%;
+  border-collapse: separate;     /* allow spacing */
+  border-spacing: 0.3em 0.3em;    /* horizontal gap 0.5em, vertical gap 0.3em */
+  margin: 0.5em;                  /* same outer margin as .greeting2 */
+}
+
+/* 2. Style each cell to match .greeting2 */
+.stats-table td {
+  background-color: #8a8b8b;      /* same fill */
+  color: #2a2b2b;                 /* same text color */
+  padding: 0.5em 1em;             /* same top/bottom & left/right padding */
+  box-shadow:
+    inset -1px -1px 1px rgba(255,255,255,0.8),
+    inset 1px 1px 1px rgba(0,0,0,0.6);
+  border-radius: 2px;             /* optional: match your div’s slight rounding */
+}
+
+/* 3. If you want the label and value cells sized differently: */
+.stats-label {
+  /* e.g. make the first two columns narrower */
+  width: 80%;
+}
+
+.stats-value {
+  /* right-align the numbers */
+  text-align: right;
+}
+
 </style>
 
 <!DOCTYPE html>
@@ -179,37 +300,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Monthly Earnings</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            padding: 2em;
-        }
-
-        h1 {
-            color: #333;
-        }
-
-        ul {
-            background: white;
-            padding: 1em;
-            border-radius: 8px;
-            list-style-type: none;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        }
-
-        li {
-            margin: 0.5em 0;
-            font-size: 1.1em;
-            color: #222;
-        }
-    </style>
+    
 </head>
 <body>
     <div class="aside">
         <div class="top-part">
             <img src="{% static 'images/mcwall/Alex.png' %}" alt="Avatar" class="avatar">
         </div>
+        <a href="{% url 'warehouse_home' %}">
+            <div class="link-section">
+                Home
+            </div>
+        </a>
         <a href="{% url 'restaurant_manager_requests' %}">
             <div class="link-section">
                 View Requests
@@ -240,11 +342,7 @@
                 Restock Items
             </div>
         </a>
-        <a href="{% url 'update_fees' %}"> 
-            <div class="link-section">
-                Special Charges
-            </div>
-        </a>
+        
         <a href="{% url 'warehouse_orders' %}"> 
             <div class="link-section">
                 View Orders
@@ -278,22 +376,37 @@
     </div>
     <div class="main-content">
         <div class="greeting">
-            <h1>📊 Warehouse Overall Report</h1>
+            <h1> Warehouse Overall Report</h1>
         </div>
     
-
-    <h3>Most Ordered Item:</h3>
-    {% if most_ordered %}
-        <p><strong>{{ most_ordered.batch__item__item_name }}</strong> - {{ most_ordered.total_quantity }} units ordered</p>
-    {% else %}
-        <p>No orders yet.</p>
-    {% endif %}
-
-    <h3>Total Items Ordered:</h3>
-    <p>{{ total_items }}</p>
-
-    <h3>Total Revenue from Paid Orders:</h3>
-    <p>Rs {{ total_revenue }}</p>
+        <div class="back-container">
+            <div class="greeting2">
+                Report Statistics
+            </div>
+            <table class="stats-table">
+                <tr class="stats-row">
+                  <td class="stats-label">Most Ordered Item:</td>
+                  <td class="stats-value">{% if most_ordered %}
+                    <strong>{{ most_ordered.batch__item__item_name }}</strong>
+                    — {{ most_ordered.total_quantity }} units ordered
+                  {% else %}
+                    No orders yet.
+                  {% endif %}
+                </td>
+                </tr>
+                <tr class="stats-row">
+                  <td class="stats-label">Total Items Ordered:</td>
+                  <td class="stats-value">{{ total_items }}</td>
+                </tr>
+                <tr class="stats-row">
+                    <td class="stats-label" >Total Revenue from Paid Orders:</td>
+                    <td class="stats-value" style="color: green;">Rs {{ total_revenue }}</td>
+                </tr>
+                
+              </table>
+        
+        </div>
+          
         </div>
 </body>
 </html>

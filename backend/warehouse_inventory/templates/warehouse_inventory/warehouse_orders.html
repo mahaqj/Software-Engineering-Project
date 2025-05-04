@@ -4,18 +4,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Cart - SupplyCraft</title>
+    <title>View Orders - SupplyCraft</title>
   
-  <link
-    href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Tektur:wght@400..900&display=swap"
+    <link
     rel="stylesheet"
-  >
+    media="screen"
+    href="https://fontlibrary.org//face/minecraftia"
+    type="text/css"
+  />
   <style>
     body {
       margin: 0;
       padding: 0;
       background-size: cover;
-      font-family: "Pixelify Sans", sans-serif;
+      font-family: 'MinecraftiaRegular', sans-serif; 
+      font-size: small;
       color: #ffffff;
       background: url("{% static 'images/mcwall/price_list.png' %}") no-repeat center center fixed;
       background-size: cover;
@@ -47,6 +50,7 @@
        left: 260px;
        top: 0;
        height: 100%;
+       overflow-y: auto;
    }
 
    .avatar{
@@ -67,12 +71,13 @@
 
     .link-section{
         background-color:rgb(238, 144, 37);
-        height: 40px;
+        height: 30px;
         text-align: center;
         margin: 0.5em;
         padding:0.25em;
         align-items: center;
         color: #fff;
+        padding-top: 0.8em;
     }
 
     .link-section:hover{
@@ -99,7 +104,7 @@
     table{
         text-align: center;
         border-spacing: 3px;
-        width: 80%;
+        width: 90%;
     }
     tr{
         text-align: center;
@@ -109,12 +114,64 @@
     tr:hover{
         background:  #246314;
         cursor: pointer;
+        color: white;
     }
 
     th{
         background-color: gray;
         background: #33891d;
     }
+
+    tfoot{
+        background-color: none;
+    }
+
+    tfoot:hover{
+        color: white
+    }
+
+    .th2{
+        background-color: none;
+        background: none;
+    }
+
+    .th2:hover{
+        color: white;
+        font-family: inherit;
+    }
+    .card{
+        background-color: #ccc;
+        background-color: rgba(0, 0, 0, 0.6);
+    }
+
+    .submit-btn{
+        border: none;
+        color: white;
+        padding: 0.5em 0.7em;
+        font-family: inherit;
+        background-color: green;
+    }
+
+    .submit-btn2{
+        border: none;
+        color: white;
+        padding: 0.5em 0.7em;
+        font-family: inherit;
+        background-color: red;
+    }
+
+    .submit-btn:hover{
+        cursor: pointer;
+        background-color: black;
+        background-color: #49b82d;
+    }
+    .submit-btn2:hover{
+        cursor: pointer;
+        background-color: black;
+        background-color: #df3030;
+    }
+
+    
 </style>
 </head>
 <body>
@@ -122,6 +179,11 @@
         <div class="top-part">
             <img src="{% static 'images/mcwall/Alex.png' %}" alt="Avatar" class="avatar">
         </div>
+        <a href="{% url 'warehouse_home' %}">
+            <div class="link-section">
+                Home
+            </div>
+        </a>
         <a href="{% url 'restaurant_manager_requests' %}">
             <div class="link-section">
                 View Requests
@@ -152,11 +214,7 @@
                 Restock Items
             </div>
         </a>
-        <a href="{% url 'update_fees' %}"> 
-            <div class="link-section">
-                Special Charges
-            </div>
-        </a>
+       
         <a href="{% url 'warehouse_orders' %}"> 
             <div class="link-section">
                 View Orders
@@ -189,48 +247,67 @@
         </a>       
     </div>
     <div class="main-content">
-        <h2>📦 All Placed Orders</h2>
+        <h2>All Placed Orders</h2>
 
         {% for order in orders %}
-            <div style="border: 1px solid #aaa; padding: 15px; margin-bottom: 20px; border-radius: 10px;">
+            <div class="card" style="border: 1px solid #aaa; padding: 15px; margin-bottom: 20px; border-radius: 10px;">
                 <p><strong>Order ID:</strong> {{ order.order_id }}</p>
                 <p><strong>Restaurant:</strong> {{ order.restaurant_manager.restaurant_name }}</p>
-                <p><strong>Urgent Delivery:</strong> {{ order.urgent_delivery }}</p>
                 <p><strong>Date:</strong> {{ order.date }}</p>
 
                 <table border="1" style="width:100%; margin-top:10px;">
                     <thead>
-                        <tr>
-                            <th>Item</th>
-                            <th>Batch ID</th>
-                            <th>Quantity</th>
-                            <th>Unit Price</th>
-                            <th>Subtotal</th>
-                        </tr>
+                      <tr>
+                        <th>Item</th>
+                        <th>Batch ID</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Subtotal</th>
+                      </tr>
                     </thead>
                     <tbody>
-                        {% for item in order.order_items.all %}
+                      {% for item in order.order_items.all %}
                         <tr>
-                            <td>{{ item.batch.item.item_name }}</td>
-                            <td>{{ item.batch.batch_id }}</td>
-                            <td>{{ item.quantity }}</td>
-                            <td>{{ item.unit_price }}</td>
-                            <td>{{ item.quantity|floatformat:2|add:""|floatformat:2|floatformat:2|add:"" }} × {{ item.unit_price }} = {{ item.quantity|floatformat:2|add:""|floatformat:2|floatformat:2|add:"" }}</td> <!--ew what is even dat-->
-                            {% comment %} <td>{{ item.quantity|floatformat:2|add:"0" }} × {{ item.unit_price }} = Rs {{ item.quantity|floatformat:2|add:"0"|floatformat:2|add:"0" }}</td> {% endcomment %}
+                          <td>{{ item.batch.item.item_name }}</td>
+                          <td>{{ item.batch.batch_id }}</td>
+                          <td>{{ item.quantity }}</td>
+                          <td>{{ item.unit_price }}</td>
+                          <td>
+                            {{ item.quantity }} × {{ item.unit_price }}
+                            = {{ item.quantity|floatformat:2|floatformat:2|add:"0"|floatformat:2|add:"0" }}  
+                            {# you can simplify your filters to: {{ item.quantity|floatformat:2|floatformat:2 }} #}
+                          </td>
                         </tr>
-                        {% endfor %}
+                      {% empty %}
+                        <tr>
+                          <td colspan="5">No items in this order.</td>
+                        </tr>
+                      {% endfor %}
                     </tbody>
-                </table>
+                    <tfoot>
+                      <tr>
+                        <th class="th2" colspan="4" style="text-align:left">Grand Total:</th>
+                        <th class="th2" style="color: green;">
+                          {% if order_total %}
+                            {{ order_total|floatformat:2 }}
+                          {% else %}
+                            {{ order.total_amount|floatformat:2 }}
+                          {% endif %}
+                        </th>
+                      </tr>
+                    </tfoot>
+                  </table>
+                  
 
                 <div style="margin-top: 10px;">
                     <form action="{% url 'fulfill_order' order.order_id %}" method="POST" style="display: inline;">
                         {% csrf_token %}
-                        <button type="submit" style="background-color: green; color: white; padding: 5px 10px; border-radius: 5px;">Fulfill</button>
+                        <button class="submit-btn" type="submit" style=" color: white; padding: 5px 10px; border-radius: 5px;">Fulfill</button>
                     </form>
 
                     <form action="{% url 'reject_order' order.order_id %}" method="POST" style="display: inline;">
                         {% csrf_token %}
-                        <button type="submit" style="background-color: red; color: white; padding: 5px 10px; border-radius: 5px;">Reject</button>
+                        <button class="submit-btn2" type="submit" style=" color: white; padding: 5px 10px; border-radius: 5px;">Reject</button>
                     </form>
                 </div>
             </div>

@@ -8,17 +8,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Restock Items</title>
     <link
-    href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Tektur:wght@400..900&display=swap"
-    rel="stylesheet">
+    rel="stylesheet"
+    media="screen"
+    href="https://fontlibrary.org//face/minecraftia"
+    type="text/css"
+  />
+</head>
 <style>
     body {
-      margin: 0;
+        margin: 0;
       padding: 0;
-      background-size: cover;
-      font-family: "Pixelify Sans", sans-serif;
-      color: #ffffff;
+      font-family: 'MinecraftiaRegular', sans-serif; 
       background: url("{% static 'images/mcwall/restock.png' %}") no-repeat center center fixed;
       background-size: cover;
+      cursor: url("{% static 'images/cursor.png' %}") 16 16, auto;
+      color: #ffffff;
+      font-size: small;
+      background-size: cover;
+    
     }
     .aside{
        width: 250px;
@@ -67,12 +74,13 @@
 
     .link-section{
         background-color:rgb(238, 144, 37);
-        height: 40px;
+        height: 30px;
         text-align: center;
         margin: 0.5em;
         padding:0.25em;
         align-items: center;
         color: #fff;
+        padding-top: 0.8em;
     }
 
     .link-section:hover{
@@ -99,7 +107,8 @@
     table{
         text-align: center;
         border-spacing: 3px;
-        width: 80%;
+        width: 90%;
+        background-color: rgba(0, 0, 0, 0.6);
     }
     tr{
         text-align: center;
@@ -122,6 +131,11 @@
         <div class="top-part">
             <img src="{% static 'images/mcwall/Alex.png' %}" alt="Avatar" class="avatar">
         </div>
+        <a href="{% url 'warehouse_home' %}">
+            <div class="link-section">
+                Home
+            </div>
+        </a>
         <a href="{% url 'restaurant_manager_requests' %}">
             <div class="link-section">
                 View Requests
@@ -152,11 +166,7 @@
                 Restock Items
             </div>
         </a>
-        <a href="{% url 'update_fees' %}"> 
-            <div class="link-section">
-                Special Charges
-            </div>
-        </a>
+        
         <a href="{% url 'warehouse_orders' %}"> 
             <div class="link-section">
                 View Orders
@@ -199,21 +209,29 @@
                 <th>Item ID</th>
                 <th>Name</th>
                 <th>Current Stock</th>
-                <th>Restock</th>
+                <th>Quantity</th>
+                <th>Expiry Date</th>
+                <th>Options</th>
             </tr>
             {% for data in low_stock_items %}
             <tr>
                 <td>{{ data.item.item_id }}</td>
                 <td>{{ data.item.item_name }}</td>
                 <td>{{ data.stock }}</td>
+                <form method="post" action="{% url 'restock_item' data.item.item_id %}"></form>
                 <td>
-                    <form method="post" action="{% url 'restock_item' data.item.item_id %}">
+                    
                         {% csrf_token %}
                         <input type="number" name="quantity" placeholder="Qty" min="1" required>
+                    </td>
+                    <td>
                         <input type="date" name="expiry_date" required>
+                    </td>
+                    <td>
                         <button type="submit">Restock</button>
+                    </td>
                     </form>
-                </td>
+                
             </tr>
             {% endfor %}
         </table>
@@ -225,13 +243,6 @@
 
     
        
-
-    <br>
-
-    <!-- 🏠 Back Button -->
-    <a href="{% url 'warehouse_home' %}">
-        <button>Back to Warehouse</button>
-    </a>
 
 </body>
 </html>

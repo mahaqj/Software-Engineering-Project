@@ -353,6 +353,16 @@ def warehouse_orders(request):
         return HttpResponseServerError("An error occurred while fetching data. Please try again later.")
     return render(request, 'warehouse_inventory/warehouse_orders.html', {'orders': orders})
 
+# views.py
+def order_detail(request, order_id):
+    order = get_object_or_404(Order, pk=order_id)
+    total = sum(item.quantity * item.unit_price for item in order.order_items.all())
+    return render(request, "orders/detail.html", {
+        "order": order,
+        "order_total": total,
+    })
+
+
 #----------------------------------------------------------------------------------------------------------------------#
 
 @login_required
@@ -485,11 +495,24 @@ def restaurant_manager_notifications(request):
 
 @login_required
 @warehouse_manager_required
-def warehouse_home(request):
+def warehouse_home_view(request):
     try:
         low_stock_count = services.count_low_stock_items()
+        total_revenue = services.get_total_revenue()
+        expired_batches = services.get_expired_batches()
+        expiring_soon_batches = services.get_expiring_soon_batches()
+
+        expired_count       = expired_batches.count() if hasattr(expired_batches, 'count') else len(expired_batches)
+        expiring_soon_count = expiring_soon_batches.count() if hasattr(expiring_soon_batches, 'count') else len(expiring_soon_batches)
+
+    
+        print("DEBUG: low_stock_count =", low_stock_count)
     except Exception as e:
         return HttpResponseServerError("An error occurred while fetching data. Please try again later.")
-    return render(request, 'warehouse_inventory/warehouse_home.html', {'low_stock_count': low_stock_count})
-
+    return render(request, 'warehouse_inventory/warehouse_home.html', {
+        'low_stock_count':         low_stock_count,
+        'total_revenue':           total_revenue,
+        'expired_count':           expired_count,
+        'expiring_soon_count':     expiring_soon_count,
+    })
 #----------------------------------------------------------------------------------------------------------------------#

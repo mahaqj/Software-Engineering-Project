@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Warehouse Manager Home</title>
+    <title>Send Message</title>
     <title>Home - SupplyCraft</title>
   
   <link
@@ -23,16 +23,13 @@
       margin: 0;
       padding: 0;
       font-family: 'MinecraftiaRegular', sans-serif; /* Updated font */
-      background: url("{% static 'images/mcwall/warehouse_home_1.png' %}") no-repeat center center fixed;
+      background: url("{% static 'images/mcwall/message.png' %}") no-repeat center center fixed;
       background-size: cover;
       cursor: url("{% static 'images/cursor.png' %}") 16 16, auto;
       color: #ffffff;
     font-size: small;
 
      
-      /* Custom background */
-      background: url("{% static 'images/mcwall/warehouse_home_1.png' %}") no-repeat center center fixed;
-
       background-size: cover;
       /* Custom cursor */
       cursor: url("{% static 'images/cursor.png' %}") 16 16, auto;
@@ -137,14 +134,14 @@
 
     .link-section{
         background-color:rgb(238, 144, 37);
-        height: 40px;
+        height: 30px;
         text-align: center;
         margin: 0.5em;
         padding:0.25em;
         align-items: center;
         color: #fff;
+        padding-top: 0.8em;
     }
-
     .link-section:hover{
         background-color:rgb(238, 110, 37);
         cursor: pointer;
@@ -172,6 +169,85 @@
     }
 }
 
+
+.back-container{
+    
+    background-color: #8a8b8b;
+    background-color: #dbdbda;
+    
+    width: 50%;
+    margin: auto;
+    margin-top: 12em;
+    border-color: black;
+    border-width: 10px;
+    border: 0.1em solid #1a0606;
+    border-radius: 2px;
+    box-shadow:2px 2px 4px rgba(0, 0, 0, 0.6),
+    inset -1px -1px 1px rgba(255, 255, 255, 0.6),
+    inset 1px 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.greeting2{
+    background-color: #8a8b8b;
+    margin: 0.5em;
+    height: 1.9em;
+    color: #2a2b2b;
+    box-shadow:
+    inset -1px -1px 1px rgba(255, 255, 255, 0.6),
+    inset 1px 1px 1px rgba(0, 0, 0, 0.6);
+    padding: 0.4em;
+    padding-left: 1em;
+    padding-top: 0.6em;
+}
+
+.greeting2{
+    background-color: #dbdbda;
+    margin: 0.5em;
+    height: 1.9em;
+    color: #2a2b2b;
+    /*box-shadow: none; */
+    padding: 0.4em;
+    padding-left: 1em;
+    padding-top: 0.6em;
+    font-size: 1.3em;
+}
+
+/* make the form a column, centered */
+.back-container form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;      /* center horizontally */
+  justify-content: center;  /* center vertically if you give the form a height */
+  gap: 1em;                  /* space between textarea and button */
+  padding: 1em;             /* optional, to keep things from touching the edges */
+}
+
+/* stretch the textarea to a pleasant width */
+.back-container textarea {
+  width: 90%;               /* or max-width: 500px; */
+  box-sizing: border-box;   /* include its padding in that width */
+  padding: 0.5em;
+  font-size: 1em;
+  font-family: inherit;
+  color: #2a2b2b;
+}
+
+/* style the button if you like */
+.back-container .submit-btn {
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  cursor: pointer;
+  background-color: green;
+  border: none;
+  color: white;
+  font-family:inherit;
+}
+
+.back-container .submit-btn:hover{
+    background-color: rgb(4, 173, 4);
+}
+
+
 </style>
 </head>
 <body>
@@ -180,6 +256,11 @@
         <div class="top-part">
             <img src="{% static 'images/mcwall/Alex.png' %}" alt="Avatar" class="avatar">
         </div>
+        <a href="{% url 'warehouse_home' %}">
+            <div class="link-section">
+                Home
+            </div>
+        </a>
         <a href="{% url 'restaurant_manager_requests' %}">
             <div class="link-section">
                 View Requests
@@ -210,11 +291,7 @@
                 Restock Items
             </div>
         </a>
-        <a href="{% url 'update_fees' %}"> 
-            <div class="link-section">
-                Special Charges
-            </div>
-        </a>
+        
         <a href="{% url 'warehouse_orders' %}"> 
             <div class="link-section">
                 View Orders
@@ -248,9 +325,10 @@
     </div>
     
     <div class="main-content">
-        <div class="greeting">
-        <h2>Write Your Message</h2>
-
+        <div class="back-container">
+            <div class="greeting2">
+                Write Your Message
+            </div>
         <form method="POST">
             {% csrf_token %}
             
@@ -258,13 +336,13 @@
             <textarea name="message_content" rows="6" placeholder="Enter your message here..." required></textarea>
 
             <!-- Hidden field for restaurant manager id -->
-            <input type="hidden" name="restaurant_manager_id" value="{{ restaurant_manager.user_id }}">
+            <input class="input-box" type="hidden" name="restaurant_manager_id" value="{{ restaurant_manager.user_id }}">
 
             <!-- Submit button to send message -->
-            <button type="submit">Notify</button>
+            <button class="submit-btn" type="submit">Notify</button>
         </form>
         </div>
-
+    </div>
     </main>
 </body>
 </html>
