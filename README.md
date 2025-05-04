@@ -6,8 +6,6 @@
 
 This is a Django-based web application designed to streamline inventory management between  a **warehouse manager** and **restaurant managers**.
 
----
-
 Follow the steps below to run the project locally on your machine.
 
 ### Step 1: Unzip the Archive
