@@ -3,6 +3,7 @@
 **Developed by Amna Amir & Maha Qaiser**
 
 ![image](https://github.com/user-attachments/assets/799f94c0-4646-41d0-8552-7c2f4d353cb4)
+
 This is a Django-based web application designed to streamline inventory management between  a **warehouse manager** and **restaurant managers**.
 
 ---
