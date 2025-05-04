@@ -1,5 +1,7 @@
-# Software Engineering Project
-## SupplyCraft: A Warehouse Inventory Management System
+# SupplyCraft: A Warehouse Inventory Management System  
+### CS3009: Software Engineering Project  
+**Developed by Amna Amir & Maha Qaiser**
+
 ![image](https://github.com/user-attachments/assets/799f94c0-4646-41d0-8552-7c2f4d353cb4)
 This is a Django-based web application designed to streamline inventory management between  a **warehouse manager** and **restaurant managers**.
 
@@ -32,7 +34,7 @@ Visit [http://127.0.0.1:8000/login](http://127.0.0.1:8000/login) in your browser
 - Create an account as a **restaurant manager**.
 - Note: Your account must be **approved by a warehouse manager** before you can log in.
 
-### 🔐 Optional (First-Time Setup Only)
+### Optional (First-Time Setup Only)
 
 If you're running the project for the first time and no warehouse manager account exists:
 
@@ -42,7 +44,7 @@ If you're running the project for the first time and no warehouse manager accoun
 
 ---
 
-## 🛠️ Features
+## Features
 
 - Restaurant Manager Signup/Login
 - Food Item Management (Add/Edit/Delete)
@@ -53,7 +55,7 @@ If you're running the project for the first time and no warehouse manager accoun
 
 ---
 
-## 👨‍💻 Tech Stack
+## Tech Stack
 
 - **Backend**: Django (Python)
 - **Frontend**: HTML, CSS (via Django templates)
