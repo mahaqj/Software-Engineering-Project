@@ -47,7 +47,7 @@ If you're running the project for the first time and no warehouse manager accoun
 
 ## Features
 
-- Restaurant Manager Signup/Login
+- Managers' Signup/Login
 - Food Item Management (Add/Edit/Delete)
 - Order Placement & Tracking
 - Inventory Restocking
