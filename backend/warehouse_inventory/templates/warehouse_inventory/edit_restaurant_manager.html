@@ -6,18 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Account - SupplyCraft</title>
   
-  <link
-    href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Tektur:wght@400..900&display=swap"
+    <link
     rel="stylesheet"
-  >
-<style>
-     body {
+    media="screen"
+    href="https://fontlibrary.org//face/minecraftia"
+    type="text/css"
+  />
+
+  <style>
+    body {
       margin: 0;
       padding: 0;
-      background-size: cover;
-      font-family: "Pixelify Sans", sans-serif;
+      font-family: 'MinecraftiaRegular', sans-serif; 
+      font-size: small;
       color: #ffffff;
-      background: url("{% static 'images/mcwall/warehouse_home_1.png' %}") no-repeat center center fixed;
+      background: url("{% static 'images/mcwall/Fees.png' %}") no-repeat center center fixed;
 
       background-size: cover;
       /* Custom cursor */
@@ -55,7 +58,7 @@
     }
 
     .greeting{
-        padding-top: 1em;
+        padding-top: 7em;
         padding-left: 1em;
     }
 
@@ -122,12 +125,13 @@
 
     .link-section{
         background-color: #4baf32;
-        height: 40px;
+        height: 30px;
         text-align: center;
         margin: 0.5em;
         padding:0.25em;
         align-items: center;
         color: #fff;
+        padding-top: 0.8em;
     }
 
     .link-section:hover{
@@ -139,7 +143,68 @@
         text-decoration: none;
         color: #fff;
     }
+    a{
+        text-decoration: none;
+        color: #fff;
+    }
+    table{
+        text-align: center;
+        border-spacing: 3px;
+        width: 90%;
+        background-color: rgba(0, 0, 0, 0.6);
+    }
+    tr{
+        text-align: center;
+        margin: 1.5em;
+    }
+
+    tr:hover{
+        background:  rgb(238, 144, 37);
+        cursor: pointer;
+    }
+
+    th{
+        background-color: gray;
+        background: rgb(238, 110, 37);
+        font-weight: lighter;
+    }
+
+    th, td{
+        padding: 8px;
+    }
     
+    .input2{
+        width: 100%;
+        height: 100%;
+        border: none;
+        background-color: inherit;
+        font-family: inherit;
+        color: white;
+    }
+
+    .submit-btn{
+  margin-left: 1em;
+  margin-top: -0.5em;
+  width: 18em;
+  height: 2.2em;
+  background-color: #ccc;
+  
+  background-color: rgb(238, 110, 37);
+  background-color: black;
+  background-color:  #246314;
+  background-color: #ccc;
+  color: white;
+  padding: 0.3em 0.7em;
+  font-family: inherit;
+  border: 0.5px gray;
+  color: black;
+}
+
+.submit-btn:hover{
+  cursor: pointer;
+  background-color: #33891d;
+  color: white;
+}
 
 </style>
 </head>
@@ -205,15 +270,15 @@
         <table>
             <tr>
                 <th>Manager Name:</th>
-                <td><input type="text" name="manager_name" value="{{ manager.user.manager_name }}" required><td>
+                <td><input class="input2" type="text" name="manager_name" value="{{ manager.user.manager_name }}" required></td>
             </tr>
             <tr>
                 <th>Contact Number:</th>
-                <td><input type="text" name="contact_no" value="{{ manager.user.contact_no }}" required><td>
+                <td><input class="input2" type="text" name="contact_no" value="{{ manager.user.contact_no }}" required></td>
             </tr>
             <tr>
                 <th>Bank Account Number:</th>
-                <td><input type="text" name="bank_acc_no" value="{{ manager.bank_acc_no }}" required><td>
+                <td><input class="input2" type="text" name="bank_acc_no" value="{{ manager.bank_acc_no }}" required></td>
             </tr>
             
             
@@ -221,9 +286,8 @@
 
         </table>
     </br>
-        <button type="submit">Save Changes</button>
+        <button class="submit-btn" type="submit">Save Changes</button>
     </form>
 
-    <a href="{% url 'restaurant_home' %}">Cancel</a>
 </body>
 </html>

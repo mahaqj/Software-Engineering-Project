@@ -4,20 +4,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home - SupplyCraft</title>
+    <title>Notifications - SupplyCraft</title>
   
-  <link
-    href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Tektur:wght@400..900&display=swap"
+    <link
     rel="stylesheet"
-  >
-<style>
-     body {
+    media="screen"
+    href="https://fontlibrary.org//face/minecraftia"
+    type="text/css"
+  />
+
+  <style>
+    body {
       margin: 0;
       padding: 0;
-      background-size: cover;
-      font-family: "Pixelify Sans", sans-serif;
+      font-family: 'MinecraftiaRegular', sans-serif; 
+      font-size: small;
       color: #ffffff;
-      background: url("{% static 'images/mcwall/warehouse_home_1.png' %}") no-repeat center center fixed;
+      background: url("{% static 'images/mcwall/earning.png' %}") no-repeat center center fixed;
 
       background-size: cover;
       /* Custom cursor */
@@ -140,6 +143,197 @@
         color: #fff;
     }
 
+    .aside::-webkit-scrollbar 
+    {
+    display: none;
+    }
+
+    .greeting{
+        padding-top: 1em;
+        padding-left: 1em;
+    }
+
+    .flex-container{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+        height: 80%;
+    }
+
+    .idea-card{
+        width: 300px;
+        height: 200px;
+        background-color: rgba(0, 0, 0, 0.6);
+        margin: 0.5em;
+        align-items: center;
+        text-align: center;
+    }
+
+    .idea-card:hover{
+        box-shadow: 0 0 20px rgba(0,0,0,0.7);
+        transition: 0.3s ease;
+    }
+
+    .heading{
+        padding-top:0.5em;
+        
+    }
+    .image{
+        width: 50%;
+        height: 50%;
+        background-color: white;
+        margin: auto;
+        margin-top: 1.5em;
+        border-radius: 50%;
+        
+    }
+
+    .image:hover{
+        transform: scale(1.1);
+        transition: .3s ease;
+    }
+    .responsive{
+        width: 100%;
+        height: 100%;
+    }
+
+    .avatar{
+        vertical-align: middle;
+        width: 125px;
+        height: 125px;
+        border-radius: 50%;
+        margin-top: 40px;
+        margin-left: 60px;
+
+    }
+
+    .top-part{
+        width: 100%;
+        height: 190px;
+        align-items: center;
+    }
+
+    .link-section{
+        background-color: #4baf32;
+        height: 30px;
+        text-align: center;
+        margin: 0.5em;
+        padding:0.25em;
+        align-items: center;
+        color: #fff;
+        padding-top: 0.8em;
+    }
+
+    .link-section:hover{
+        background: #246314;
+        cursor: pointer;
+    }
+
+    a{
+        text-decoration: none;
+        color: #fff;
+    }
+    table{
+        text-align: center;
+        border-spacing: 3px;
+        width: 80%;
+    }
+    tr{
+        text-align: center;
+        margin: 1em;
+    }
+
+    tr:hover{
+        background:  #246314;
+        cursor: pointer;
+    }
+
+    th{
+        background-color: gray;
+        background: #33891d;
+    }
+
+    body{
+        overflow-y: auto;
+    }
+
+    .main-content{
+        overflow-y: auto;
+    }
+    .back-container{
+    
+    background-color: #8a8b8b;
+    background-color: #dbdbda;
+    width: 75%;
+    margin: auto;
+    margin-top: 2em;
+    border-color: black;
+    border-width: 10px;
+    border: 0.1em solid #1a0606;
+    border-radius: 2px;
+    box-shadow:2px 2px 4px rgba(0, 0, 0, 0.6),
+    inset -1px -1px 1px rgba(255, 255, 255, 0.6),
+    inset 1px 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.greeting2{
+    background-color: #8a8b8b;
+    margin: 0.5em;
+    height: 1.9em;
+    color: #2a2b2b;
+    box-shadow:
+    inset -1px -1px 1px rgba(255, 255, 255, 0.6),
+    inset 1px 1px 1px rgba(0, 0, 0, 0.6);
+    padding: 0.4em;
+    padding-left: 1em;
+    padding-top: 0.6em;
+}
+
+    .greeting2{
+    background-color: #dbdbda;
+    margin: 0.5em;
+    height: 1.9em;
+    color: #2a2b2b;
+    /*box-shadow: none; */
+    padding: 0.4em;
+    padding-left: 1em;
+    padding-top: 0.6em;
+    font-size: 1.3em;
+}
+
+.stats-table {
+  width: 98%;
+  border-collapse: separate;     /* allow spacing */
+  border-spacing: 0.3em 0.3em;    /* horizontal gap 0.5em, vertical gap 0.3em */
+  margin: 0.5em;                  /* same outer margin as .greeting2 */
+}
+
+/* 2. Style each cell to match .greeting2 */
+.stats-table td {
+  background-color: #8a8b8b;      /* same fill */
+  color: #2a2b2b;                 /* same text color */
+  padding: 0.5em 1em;             /* same top/bottom & left/right padding */
+  box-shadow:
+    inset -1px -1px 1px rgba(255,255,255,0.8),
+    inset 1px 1px 1px rgba(0,0,0,0.6);
+  border-radius: 2px;             /* optional: match your div’s slight rounding */
+}
+
+.submit-btn{
+    width: 100%;
+    height: 100%;
+    font-family: inherit;
+    border: none;
+    background-color: inherit;
+    color: inherit;
+}
+
+.submit-btn:hover{
+    cursor: pointer;
+    color: rgb(23, 129, 23);
+}
+
 </style>
 </head>
 <body>
@@ -197,23 +391,36 @@
     </div>
     <div class="main-content">
         <div class="greeting">
-        <h1>Notifications</h1>
-        <h2>Your Messages from Warehouse Manager</h2>
-
-        {% if notifications %}
-            <ul>
+          <h1>Notifications</h1>
+        </div>
+        <div class="back-container">
+        <div class="greeting2">
+          Your Messages from Warehouse Manager
+            </div>
+          <table class="stats-table">
+            <tbody>
+              {% if notifications %}
                 {% for notification in notifications %}
-                    <li>
-                        <strong>Message:</strong> {{ notification.content }} <br>
-                        <strong>Sent At:</strong> {{ notification.date_sent|date:"Y-m-d H:i" }} <br>
-                    </li>
+                  <tr class="stats-row">
+                    <td class="stats-value">
+                      <strong>Message:</strong> {{ notification.content }}
+                    </td>
+                    <td class="stats-value">
+                      <strong>Sent At:</strong> {{ notification.date_sent|date:"Y-m-d H:i" }}
+                    </td>
+                  </tr>
                 {% endfor %}
-            </ul>
-        {% else %}
-            <p>No notifications yet!</p>
-        {% endif %}
-            </div>
-            </div>
+              {% else %}
+                <tr class="stats-row">
+                  <td class="stats-value" colspan="2">No notifications yet!</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+        </div>
+      </div>
+      
    
 </body>
 </html>

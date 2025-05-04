@@ -4,20 +4,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Cart - SupplyCraft</title>
+    <title>View Orders - SupplyCraft</title>
   
-  <link
-    href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Tektur:wght@400..900&display=swap"
+    <link
     rel="stylesheet"
-  >
-<style>
-     body {
+    media="screen"
+    href="https://fontlibrary.org//face/minecraftia"
+    type="text/css"
+  />
+
+  <style>
+    body {
       margin: 0;
       padding: 0;
-      background-size: cover;
-      font-family: "Pixelify Sans", sans-serif;
+      font-family: 'MinecraftiaRegular', sans-serif; 
+      font-size: small;
       color: #ffffff;
-      background: url("{% static 'images/mcwall/warehouse_home_1.png' %}") no-repeat center center fixed;
+      background: url("{% static 'images/mcwall/cart.png' %}") no-repeat center center fixed;
 
       background-size: cover;
       /* Custom cursor */
@@ -122,12 +125,13 @@
 
     .link-section{
         background-color: #4baf32;
-        height: 40px;
+        height: 30px;
         text-align: center;
         margin: 0.5em;
         padding:0.25em;
         align-items: center;
         color: #fff;
+        padding-top: 0.8em;
     }
 
     .link-section:hover{
@@ -158,6 +162,86 @@
         background-color: gray;
         background: #33891d;
     }
+
+    body{
+        overflow-y: auto;
+    }
+
+    .main-content{
+        overflow-y: auto;
+    }
+    .back-container{
+    
+    background-color: #8a8b8b;
+    background-color: #dbdbda;
+    width: 75%;
+    margin: auto;
+    margin-top: 2em;
+    border-color: black;
+    border-width: 10px;
+    border: 0.1em solid #1a0606;
+    border-radius: 2px;
+    box-shadow:2px 2px 4px rgba(0, 0, 0, 0.6),
+    inset -1px -1px 1px rgba(255, 255, 255, 0.6),
+    inset 1px 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.greeting2{
+    background-color: #8a8b8b;
+    margin: 0.5em;
+    height: 1.9em;
+    color: #2a2b2b;
+    box-shadow:
+    inset -1px -1px 1px rgba(255, 255, 255, 0.6),
+    inset 1px 1px 1px rgba(0, 0, 0, 0.6);
+    padding: 0.4em;
+    padding-left: 1em;
+    padding-top: 0.6em;
+}
+
+    .greeting2{
+    background-color: #dbdbda;
+    margin: 0.5em;
+    height: 1.9em;
+    color: #2a2b2b;
+    /*box-shadow: none; */
+    padding: 0.4em;
+    padding-left: 1em;
+    padding-top: 0.6em;
+    font-size: 1.3em;
+}
+
+.stats-table {
+  width: 98%;
+  border-collapse: separate;     /* allow spacing */
+  border-spacing: 0.3em 0.3em;    /* horizontal gap 0.5em, vertical gap 0.3em */
+  margin: 0.5em;                  /* same outer margin as .greeting2 */
+}
+
+/* 2. Style each cell to match .greeting2 */
+.stats-table td {
+  background-color: #8a8b8b;      /* same fill */
+  color: #2a2b2b;                 /* same text color */
+  padding: 0.5em 1em;             /* same top/bottom & left/right padding */
+  box-shadow:
+    inset -1px -1px 1px rgba(255,255,255,0.8),
+    inset 1px 1px 1px rgba(0,0,0,0.6);
+  border-radius: 2px;             /* optional: match your div’s slight rounding */
+}
+
+.submit-btn{
+    width: 100%;
+    height: 100%;
+    font-family: inherit;
+    border: none;
+    background-color: inherit;
+    color: inherit;
+}
+
+.submit-btn:hover{
+    cursor: pointer;
+    color: rgb(23, 129, 23);
+}
 
 </style>
 </head>
@@ -201,6 +285,12 @@
                 View Bill
             </div>
         </a>
+        <a href="{% url 'restaurant_manager_notifications' %}">
+            <div class ="link-section">
+                View Notifications
+            </div>
+        </a>
+        
         
         <a href="{% url 'logout' %}"> <!-- added this -->
             <div class="link-section">
@@ -209,45 +299,113 @@
         </a>
     </div>
     <div class="main-content">
-        <h2> Your Orders 📦</h2>
-
-        <h3> Processing (Cart) 🛒</h3>
-        {% for order in processing_orders %}
-            <p>Order ID: {{ order.order_id }} | Urgent: {{ order.urgent_delivery }}</p>
-        {% empty %}
-            <p>No processing orders.</p>
-        {% endfor %}
-
-        <h3> Placed Orders 📬</h3>
-        {% for order in placed_orders %}
-            <p>Order ID: {{ order.order_id }} | Urgent: {{ order.urgent_delivery }}</p>
-            <form method="POST" action="{% url 'cancel_order' order.order_id %}">
-                {% csrf_token %}
-                <button type="submit">Cancel</button>
-            </form>
-        {% empty %}
-            <p>No placed orders.</p>
-        {% endfor %}
-
-        <h3> Fulfilled Orders ✅</h3>
-        {% for order in fulfilled_orders %}
-            <p>Order ID: {{ order.order_id }} | Urgent: {{ order.urgent_delivery }}</p>
-        {% empty %}
-            <p>No fulfilled orders.</p>
-        {% endfor %}
-
-        <h3> Rejected Orders ❌</h3>
-        {% for order in rejected_orders %}
-            <p>Order ID: {{ order.order_id }} | Urgent: {{ order.urgent_delivery }}</p>
-        {% empty %}
-            <p>No rejected orders.</p>
-        {% endfor %}
-
-        <h3> Canceled Orders ❌</h3>  <!-- New section for canceled orders -->
-        {% for order in canceled_orders %}
-            <p>Order ID: {{ order.order_id }} | Urgent: {{ order.urgent_delivery }}</p>
-        {% empty %}
-            <p>No canceled orders.</p>
-        {% endfor %}
-    </div>
+        <div class="greeting"><h2>Your Orders</h2></div>
+      
+        <!-- Processing (Cart) -->
+        <div class="back-container">
+          <div class="greeting2">Processing (Cart)</div>
+          <table class="stats-table">
+            <tbody>
+              {% if processing_orders %}
+                {% for order in processing_orders %}
+                  <tr class="stats-row">
+                    <td class="stats-value">Order ID: {{ order.order_id }}</td>
+                  </tr>
+                {% endfor %}
+              {% else %}
+                <tr class="stats-row">
+                  <td class="stats-value">No processing orders.</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      
+        <!-- Placed Orders -->
+        <div class="back-container">
+          <div class="greeting2">Placed Orders</div>
+          <table class="stats-table">
+            <tbody>
+              {% if placed_orders %}
+                {% for order in placed_orders %}
+                  <tr class="stats-row">
+                    <td class="stats-value">Order ID: {{ order.order_id }}</td>
+                    <td class="stats-value">
+                      <form method="POST" action="{% url 'cancel_order' order.order_id %}">
+                        {% csrf_token %}
+                        <button type="submit">Cancel</button>
+                      </form>
+                    </td>
+                  </tr>
+                {% endfor %}
+              {% else %}
+                <tr class="stats-row">
+                  <td class="stats-value" colspan="2">No placed orders.</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      
+        <!-- Fulfilled Orders -->
+        <div class="back-container">
+          <div class="greeting2">Fulfilled Orders</div>
+          <table class="stats-table">
+            <tbody>
+              {% if fulfilled_orders %}
+                {% for order in fulfilled_orders %}
+                  <tr class="stats-row">
+                    <td class="stats-value">Order ID: {{ order.order_id }}</td>
+                  </tr>
+                {% endfor %}
+              {% else %}
+                <tr class="stats-row">
+                  <td class="stats-value">No fulfilled orders.</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      
+        <!-- Rejected Orders -->
+        <div class="back-container">
+          <div class="greeting2">Rejected Orders</div>
+          <table class="stats-table">
+            <tbody>
+              {% if rejected_orders %}
+                {% for order in rejected_orders %}
+                  <tr class="stats-row">
+                    <td class="stats-value">Order ID: {{ order.order_id }}</td>
+                  </tr>
+                {% endfor %}
+              {% else %}
+                <tr class="stats-row">
+                  <td class="stats-value">No rejected orders.</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      
+        <!-- Canceled Orders -->
+        <div class="back-container">
+          <div class="greeting2">Canceled Orders</div>
+          <table class="stats-table">
+            <tbody>
+              {% if canceled_orders %}
+                {% for order in canceled_orders %}
+                  <tr class="stats-row">
+                    <td class="stats-value">Order ID: {{ order.order_id }}</td>
+                  </tr>
+                {% endfor %}
+              {% else %}
+                <tr class="stats-row">
+                  <td class="stats-value">No canceled orders.</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
 </body>

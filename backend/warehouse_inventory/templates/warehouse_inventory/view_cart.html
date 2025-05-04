@@ -6,18 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Cart - SupplyCraft</title>
   
-  <link
-    href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Tektur:wght@400..900&display=swap"
+    <link
     rel="stylesheet"
-  >
-<style>
-     body {
+    media="screen"
+    href="https://fontlibrary.org//face/minecraftia"
+    type="text/css"
+  />
+
+  <style>
+    body {
       margin: 0;
       padding: 0;
-      background-size: cover;
-      font-family: "Pixelify Sans", sans-serif;
+      font-family: 'MinecraftiaRegular', sans-serif; 
+      font-size: small;
       color: #ffffff;
-      background: url("{% static 'images/mcwall/warehouse_home_1.png' %}") no-repeat center center fixed;
+      background: url("{% static 'images/mcwall/view_cart.png' %}") no-repeat center center fixed;
 
       background-size: cover;
       /* Custom cursor */
@@ -123,12 +126,13 @@
 
     .link-section{
         background-color: #4baf32;
-        height: 40px;
+        height: 30px;
         text-align: center;
         margin: 0.5em;
         padding:0.25em;
         align-items: center;
         color: #fff;
+        padding-top: 0.8em;
     }
 
     .link-section:hover{
@@ -143,21 +147,37 @@
     table{
         text-align: center;
         border-spacing: 3px;
-        width: 80%;
+        width: 90%;
+        background-color: rgba(0, 0, 0, 0.6);
     }
     tr{
         text-align: center;
-        margin: 1em;
+        margin: 1.5em;
     }
 
-    tr:hover{
-        background:  #246314;
-        cursor: pointer;
-    }
+   
 
     th{
         background-color: gray;
-        background: #33891d;
+        background: rgb(238, 110, 37);
+        font-weight: lighter;
+    }
+
+    .submit-btn{
+        width: 100%;
+        height: 100%;
+        border: none;
+        background-color: inherit;
+        font-family: inherit;
+        color: inherit;
+        border: 2px solid black;
+        border-color:gray;
+    }
+
+    .submit-btn:hover{
+        cursor: pointer;
+        background-color:rgb(238, 110, 37);
+        border-color: rgb(238, 110, 37);
     }
 
 </style>
@@ -216,61 +236,65 @@
     </div>
     <div class="main-content">
         <div class="greeting">
-            <h2> Your Cart 🛒</h2>
+            <h2> Your Cart </h2>
         </div>
 
 
     
-{% if order_items %}
-<table>
-    <thead>
-        <tr>
-            <th>Item</th>
-            <th>Batch ID</th>
-            <th>Quantity</th>
-            <th>Unit Price</th>
-            <th>Subtotal</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for item in order_items %}
-        <tr>
-            <td>{{ item.batch.item.item_name }}</td>
-            <td>{{ item.batch.batch_id }}</td>
-            <td>{{ item.quantity }}</td>
-            <td>{{ item.unit_price }}</td>
-            <td>{{ item.quantity|floatformat:2|add:""|floatformat:2|floatformat:2|add:"" }} × {{ item.unit_price }} = {{ item.quantity|floatformat:2|add:""|floatformat:2|floatformat:2|add:"" }}</td> <!--ew what is even dat-->
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-<h3>Total: Rs {{ total_amount }}</h3>
-<form method="POST">
-    {% csrf_token %}
-    
-    <div>
-        <label for="urgent_delivery">Urgent Delivery</label>
-        <input type="checkbox" name="urgent_delivery" {% if urgent_delivery %}checked{% endif %}>
-    </div>
-    
-    <div>
-        <p><strong>Urgent Delivery Fee:</strong> ${{ urgent_delivery_fee }}</p>
-    </div>
-    
-    <div>
-        <button type="submit">Update Cart</button>
-    </div>
-</form>
-
-<form method="POST" action="{% url 'place_order' %}">
-    {% csrf_token %}
-    <button type="submit">Place Order</button>
-</form>
-
-<a href="{% url 'view_orders' %}">View My Orders</a>
-{% else %}
-<p>Your cart is empty!</p>
-{% endif %}
+        {% if order_items %}
+        <table>
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Batch ID</th>
+              <th>Quantity</th>
+              <th>Unit Price</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in order_items %}
+            <tr>
+              <td>{{ item.batch.item.item_name }}</td>
+              <td>{{ item.batch.batch_id }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>{{ item.unit_price }}</td>
+              <td>
+                {{ item.quantity }} × {{ item.unit_price }}
+                = {{ item.quantity|floatformat:2|floatformat:2 }}
+              </td>
+            </tr>
+            {% endfor %}
+            <tr>
+              <td colspan="4" style="color: lightgreen" >Total</td>
+              <td style="color: lightgreen;">Rs {{ total_amount }}</td>
+            </tr>
+            <tr>
+              
+        
+              <!-- colspan=2 for Update Cart -->
+              <td colspan="2">
+                <form method="POST">
+                  {% csrf_token %}
+                  <button class="submit-btn" type="submit">Update Cart</button>
+                </form>
+              </td>
+        
+              <!-- colspan=2 for Place Order -->
+              <td colspan="2">
+                <form method="POST" action="{% url 'place_order' %}">
+                  {% csrf_token %}
+                  <button class="submit-btn" type="submit">Place Order</button>
+                </form>
+              </td>
+              <!-- 1 empty cell to fill the 1st column -->
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+        {% else %}
+        <p>Your cart is empty!</p>
+        {% endif %}
+        
 </div>
 </body>

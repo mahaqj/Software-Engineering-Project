@@ -6,18 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Catalog</title>
   
-  <link
-    href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Tektur:wght@400..900&display=swap"
+    <link
     rel="stylesheet"
-  >
-<style>
-     body {
+    media="screen"
+    href="https://fontlibrary.org//face/minecraftia"
+    type="text/css"
+  />
+
+  <style>
+    body {
       margin: 0;
       padding: 0;
-      background-size: cover;
-      font-family: "Pixelify Sans", sans-serif;
+      font-family: 'MinecraftiaRegular', sans-serif; 
+      font-size: small;
       color: #ffffff;
-      background: url("{% static 'images/mcwall/warehouse_home_1.png' %}") no-repeat center center fixed;
+      background: url("{% static 'images/mcwall/home.png' %}") no-repeat center center fixed;
 
       background-size: cover;
       /* Custom cursor */
@@ -123,14 +126,14 @@
 
     .link-section{
         background-color: #4baf32;
-        height: 40px;
+        height: 30px;
         text-align: center;
         margin: 0.5em;
         padding:0.25em;
         align-items: center;
         color: #fff;
+        padding-top: 0.8em;
     }
-
     .link-section:hover{
         background: #246314;
         cursor: pointer;
@@ -159,6 +162,84 @@
         background-color: gray;
         background: #33891d;
     }
+
+    body{
+        overflow-y: auto;
+    }
+
+    .back-container{
+    
+    background-color: #8a8b8b;
+    background-color: #dbdbda;
+    width: 75%;
+    margin: auto;
+    margin-top: 8em;
+    border-color: black;
+    border-width: 10px;
+    border: 0.1em solid #1a0606;
+    border-radius: 2px;
+    box-shadow:2px 2px 4px rgba(0, 0, 0, 0.6),
+    inset -1px -1px 1px rgba(255, 255, 255, 0.6),
+    inset 1px 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.greeting2{
+    background-color: #8a8b8b;
+    margin: 0.5em;
+    height: 1.9em;
+    color: #2a2b2b;
+    box-shadow:
+    inset -1px -1px 1px rgba(255, 255, 255, 0.6),
+    inset 1px 1px 1px rgba(0, 0, 0, 0.6);
+    padding: 0.4em;
+    padding-left: 1em;
+    padding-top: 0.6em;
+}
+
+.greeting2{
+    background-color: #dbdbda;
+    margin: 0.5em;
+    height: 1.9em;
+    color: #2a2b2b;
+    /*box-shadow: none; */
+    padding: 0.4em;
+    padding-left: 1em;
+    padding-top: 0.6em;
+    font-size: 1.3em;
+}
+
+.stats-table {
+  width: 98%;
+  border-collapse: separate;     /* allow spacing */
+  border-spacing: 0.3em 0.3em;    /* horizontal gap 0.5em, vertical gap 0.3em */
+  margin: 0.5em;                  /* same outer margin as .greeting2 */
+}
+
+/* 2. Style each cell to match .greeting2 */
+.stats-table td {
+  background-color: #8a8b8b;      /* same fill */
+  color: #2a2b2b;                 /* same text color */
+  padding: 0.5em 1em;             /* same top/bottom & left/right padding */
+  box-shadow:
+    inset -1px -1px 1px rgba(255,255,255,0.8),
+    inset 1px 1px 1px rgba(0,0,0,0.6);
+  border-radius: 2px;             /* optional: match your div’s slight rounding */
+}
+
+.submit-btn{
+    width: 100%;
+    height: 100%;
+    font-family: inherit;
+    border: none;
+    background-color: inherit;
+    color: inherit;
+}
+
+.submit-btn:hover{
+    cursor: pointer;
+    color: rgb(23, 129, 23);
+}
+
 
 </style>
 </head>
@@ -216,54 +297,56 @@
     </div>
 
 <div class="main-content">
-    <div class="greeting">
-        <h2>Product Catalog</h2>
-    </div>
+    <div class="back-container">
+        <div class="greeting2">
+            Product Catalog
+        </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Item ID</th>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Unit Price</th>
-                <th>Image</th>
-                <th>Current Stock</th>
-                <th>Add to Cart</th> <!--added-->
-            </tr>
-        </thead>
+    <table class="stats-table">
         <tbody>
+            <tr class="stats-row">
+                <td class="stats-label">Item ID</td>
+                <td class="stats-label">Name</td>
+                <td class="stats-label">Category</td>
+                <td class="stats-label">Unit Price</td>
+                <td class="stats-label">Image</td>
+                <td class="stats-label">Current Stock</td>
+                <td class="stats-label">Quantity</td> <!--added-->
+            </tr>
+        
+        
         {% for data in items_with_stock %}
-        <tr>
-            <td>{{ data.item.item_id }}</td>
-            <td>{{ data.item.item_name }}</td>
-            <td>{{ data.item.category }}</td>
-            <td>{{ data.item.unit_price }}</td>
-            <td>
+        <tr class="stats-row">
+            <td class="stats-label">{{ data.item.item_id }}</td>
+            <td class="stats-label">{{ data.item.item_name }}</td>
+            <td class="stats-label">{{ data.item.category }}</td>
+            <td class="stats-label">{{ data.item.unit_price }}</td>
+            <td class="stats-label">
                 {% if data.item.image %}
                     <img src="{{ data.item.image.url }}" alt="{{ data.item.item_name }}" width="100" height="100">
                 {% else %}
                     No Image
                 {% endif %}
             </td>
-            <td>{{ data.stock|default:0 }}</td>
-            <td>
+            <td class="stats-label">{{ data.stock|default:0 }}</td>
+            <td class="stats-label">
                 <form action="{% url 'add_to_cart' data.item.item_id %}" method="post">
                     {% csrf_token %}
                     <input type="number" name="quantity" min="1" max="{{ data.stock }}" required>
             </td>
-            <td>
-                    <button type="submit">Add to Cart</button>
+            <td class="stats-label">
+                    <button class="submit-btn" type="submit">Add to Cart</button>
                 </form>
             </td>
         </tr>
         {% empty %}
-        <tr>
+        <tr class="stats-row">
             <td colspan="6">No food items available.</td>
         </tr>
         {% endfor %}
         </tbody>
     </table>
+</div>
 </div>
 
 </body>

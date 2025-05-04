@@ -4,18 +4,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home - SupplyCraft</title>
+    <title>Account Details - SupplyCraft</title>
   
-  <link
-    href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Tektur:wght@400..900&display=swap"
+    <link
     rel="stylesheet"
-  >
-<style>
-     body {
+    media="screen"
+    href="https://fontlibrary.org//face/minecraftia"
+    type="text/css"
+  />
+
+  <style>
+    body {
       margin: 0;
       padding: 0;
-      background-size: cover;
-      font-family: "Pixelify Sans", sans-serif;
+      font-family: 'MinecraftiaRegular', sans-serif; 
+      font-size: small;
       color: #ffffff;
       background: url("{% static 'images/mcwall/warehouse_home_1.png' %}") no-repeat center center fixed;
 
@@ -122,13 +125,13 @@
 
     .link-section{
         background-color: #4baf32;
-        height: 40px;
+        height: 30px;
         text-align: center;
         margin: 0.5em;
         padding:0.25em;
         align-items: center;
         color: #fff;
-        
+        padding-top: 0.8em;
     }
 
     .link-section:hover{
@@ -143,7 +146,8 @@
     table{
         text-align: center;
         border-spacing: 3px;
-        width: 70%;
+        width: 90%;
+        background-color: rgba(0, 0, 0, 0.6);
     }
     tr{
         text-align: center;
@@ -151,13 +155,14 @@
     }
 
     tr:hover{
-        background:  #246314;
+        background:  rgb(238, 144, 37);
         cursor: pointer;
     }
 
     th{
         background-color: gray;
-        background: #33891d;
+        background: rgb(238, 110, 37);
+        font-weight: lighter;
     }
 
     th, td{

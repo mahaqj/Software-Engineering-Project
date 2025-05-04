@@ -6,22 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home - SupplyCraft</title>
   
-  <link
-    href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Tektur:wght@400..900&display=swap"
+    <link
     rel="stylesheet"
-  >
-<style>
-     body {
+    media="screen"
+    href="https://fontlibrary.org//face/minecraftia"
+    type="text/css"
+  />
+
+  <style>
+    body {
       margin: 0;
       padding: 0;
-      background-size: cover;
-      font-family: "Pixelify Sans", sans-serif;
+      font-family: 'MinecraftiaRegular', sans-serif; 
+      font-size: small;
       color: #ffffff;
-      background: url("{% static 'images/mcwall/warehouse_home_1.png' %}") no-repeat center center fixed;
+      background: url("{% static 'images/mcwall/home2.jpg' %}") no-repeat center center fixed;
 
       background-size: cover;
-      /* Custom cursor */
-      cursor: url("{% static 'images/cursor.png' %}") 16 16, auto;
         
     }
 
@@ -122,12 +123,13 @@
 
     .link-section{
         background-color: #4baf32;
-        height: 40px;
+        height: 30px;
         text-align: center;
         margin: 0.5em;
         padding:0.25em;
         align-items: center;
         color: #fff;
+        padding-top: 0.8em;
     }
 
     .link-section:hover{
@@ -200,28 +202,7 @@
             <h2>Welcome, {{ request.user.manager_name }}!</h2>
         </div>
         <div class="flex-container">
-            <div class="idea-card">
-                <div class="heading">
-                    View Account Details
-                </div>
-                <div class="image">
-                    <a href="{% url 'view_restaurant_manager' request.user.user_id %}">
-                        <img src="{% static 'images/mcwall/name_tag.png' %}" alt="nametag" class="responsive">
-                    </a>
-                </div>
-            </div>
-            <div class="idea-card">
-                <div class="heading">
-                   Edit Account Details
-                </div>
-                <div class="image">
-                    <a href="{% url 'edit_restaurant_manager' manager.user_id%}">
-                        <img src="{% static 'images/mcwall/name_tag.png' %}" alt="nametag" class="responsive">
-                    </a>
-                </div>
-                
-                
-            </div>
+            
             {% comment %}
             <div class="idea-card">
                 <div class="heading">
