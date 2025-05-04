@@ -1,5 +1,3 @@
----
-
 # SupplyCraft: A Warehouse Inventory Management System  
 ### CS3009: Software Engineering Project  
 **Developed by Amna Amir & Maha Qaiser**
