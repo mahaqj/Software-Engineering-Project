@@ -3,10 +3,10 @@ from django.contrib.auth import get_user_model
 from django.utils.timezone import now
 from django.shortcuts import get_object_or_404
 from datetime import date, timedelta
-from django.db.models import Sum
+from django.db.models import Sum, Value
 from django.utils import timezone
 from django.db import transaction
-from django.db.models.functions import TruncMonth
+from django.db.models.functions import TruncMonth, Coalesce
 from .models import RestaurantManager, Item, WarehouseManager, Batch, Order, OrderItem, SystemSettings, Payment, Message
 
 ####################################################### ACCOUNTS #######################################################
@@ -103,7 +103,7 @@ def restock_item(item_id, quantity, expiry_date):
     return batch
 
 def get_low_stock_items(margin=10):
-    return Item.objects.annotate(total_stock=Sum("batches__quantity")).filter(total_stock__lt=margin)
+    return Item.objects.annotate(total_stock=Coalesce(Sum("batches__quantity"), Value(0))).filter(total_stock__lt=margin)
 
 def count_low_stock_items(margin=10):
     count = get_low_stock_items(margin).count()
@@ -235,10 +235,10 @@ def get_monthly_earnings_for_current_year():
     return monthly_earnings
 
 def get_most_ordered_item():
-    return (OrderItem.objects.values('batch__item__item_name').annotate(total_quantity=Sum('quantity')).order_by('-total_quantity').first()) #get the most ordered item (by quantity)
+    return (OrderItem.objects.filter(order__status='fulfilled').values('batch__item__item_name').annotate(total_quantity=Sum('quantity')).order_by('-total_quantity').first()) #get the most ordered item (by quantity)
 
 def get_total_items():
-    return OrderItem.objects.aggregate(total=Sum('quantity'))['total'] or 0
+    return OrderItem.objects.filter(order__status='fulfilled').aggregate(total=Sum('quantity'))['total'] or 0
 
 def get_total_revenue():
     return Payment.objects.filter(payment_status='paid').aggregate(total=Sum('amount'))['total'] or 0

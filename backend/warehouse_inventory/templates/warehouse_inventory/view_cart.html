@@ -273,22 +273,17 @@
               
         
               <!-- colspan=2 for Update Cart -->
-              <td colspan="2">
-                <form method="POST">
-                  {% csrf_token %}
-                  <button class="submit-btn" type="submit">Update Cart</button>
-                </form>
-              </td>
+              
         
               <!-- colspan=2 for Place Order -->
-              <td colspan="2">
+              <td colspan="5">
                 <form method="POST" action="{% url 'place_order' %}">
                   {% csrf_token %}
                   <button class="submit-btn" type="submit">Place Order</button>
                 </form>
               </td>
-              <!-- 1 empty cell to fill the 1st column -->
-              <td></td>
+              
+              
             </tr>
           </tbody>
         </table>

@@ -218,7 +218,7 @@
                 <td>{{ data.item.item_id }}</td>
                 <td>{{ data.item.item_name }}</td>
                 <td>{{ data.stock }}</td>
-                <form method="post" action="{% url 'restock_item' data.item.item_id %}"></form>
+                <form method="post" action="{% url 'restock_item' data.item.item_id %}">
                 <td>
                     
                         {% csrf_token %}
@@ -236,13 +236,8 @@
             {% endfor %}
         </table>
     {% else %}
-        <p>No items need restocking at the moment. 🎉</p>
-    {% endif %}
-
-   
-
-    
-       
+        <p>No items need restocking at the moment. </p>
+    {% endif %}       
 
 </body>
 </html>

@@ -231,6 +231,7 @@ def expired_food_items(request):
 def restock_items(request):
     try:
         low_stock_items = services.get_low_stock_items_with_stock()
+        
     except Exception as e:
         return HttpResponseServerError("An internal server error occurred. Please try again later")
     return render(request, "warehouse_inventory/restock_items.html", {"low_stock_items": low_stock_items})
@@ -241,11 +242,14 @@ def restock_items(request):
 @warehouse_manager_required
 def restock_item(request, item_id):
     try:
+        print("Button clicked")
         if request.method == "POST":
             quantity = request.POST.get("quantity")
             expiry_date = request.POST.get("expiry_date")
             if quantity and expiry_date:
                 services.restock_item(item_id, int(quantity), expiry_date)
+            else:
+                print("Incomplete submission")
     except Exception as e:
         return HttpResponseServerError("An internal server error occurred. Please try again later")
     return redirect("restock_items")

@@ -329,7 +329,7 @@
               {% if placed_orders %}
                 {% for order in placed_orders %}
                   <tr class="stats-row">
-                    <td class="stats-value">Order ID: {{ order.order_id }}</td>
+                    <td class="stats-value">Order ID: {{ order.order_id }}, Date: {{order.date}}, Total Amount: Rs. {{order.total_amount}}</td>
                     <td class="stats-value">
                       <form method="POST" action="{% url 'cancel_order' order.order_id %}">
                         {% csrf_token %}
@@ -355,7 +355,7 @@
               {% if fulfilled_orders %}
                 {% for order in fulfilled_orders %}
                   <tr class="stats-row">
-                    <td class="stats-value">Order ID: {{ order.order_id }}</td>
+                    <td class="stats-value">Order ID: {{ order.order_id }}, Date: {{order.date}}, Total Amount: Rs. {{order.total_amount}}</td>
                   </tr>
                 {% endfor %}
               {% else %}
@@ -375,7 +375,7 @@
               {% if rejected_orders %}
                 {% for order in rejected_orders %}
                   <tr class="stats-row">
-                    <td class="stats-value">Order ID: {{ order.order_id }}</td>
+                    <td class="stats-value">Order ID: {{ order.order_id }}, Date: {{order.date}}, Total Amount: Rs. {{order.total_amount}}</td>
                   </tr>
                 {% endfor %}
               {% else %}
@@ -395,7 +395,7 @@
               {% if canceled_orders %}
                 {% for order in canceled_orders %}
                   <tr class="stats-row">
-                    <td class="stats-value">Order ID: {{ order.order_id }}</td>
+                    <td class="stats-value">Order ID: {{ order.order_id }}, Date: {{order.date}}, Total Amount: Rs. {{order.total_amount}}</td>
                   </tr>
                 {% endfor %}
               {% else %}
